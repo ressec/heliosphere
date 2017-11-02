@@ -1,2 +1,2 @@
 # heliosphere
-Heliosphere projects covering lots of domains.
+Heliosphere's set of projects covering lots of different domains.
