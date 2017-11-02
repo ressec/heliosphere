@@ -17,7 +17,7 @@ deploy:
     
   file: "${TRAVIS_TAG}.zip"
   on:
-    repo: heliosphere/athena
+    repo: heliosphere/heliosphere
     tags: true
     all_branches: true
 notifications:
