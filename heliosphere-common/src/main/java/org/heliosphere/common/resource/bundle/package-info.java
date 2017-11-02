@@ -1,4 +1,4 @@
 /**
- * Provides artifacts related to the resource bundles.
+ * Provides artifacts related to resource bundles.
  */
 package org.heliosphere.common.resource.bundle;

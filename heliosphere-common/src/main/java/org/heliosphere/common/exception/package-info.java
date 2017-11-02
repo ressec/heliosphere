@@ -1,4 +1,4 @@
 /**
- * Provides artifacts related to common exceptions.
+ * Provides artifacts related to common/generic exceptions.
  */
 package org.heliosphere.common.exception;
