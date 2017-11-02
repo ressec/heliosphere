@@ -18,14 +18,14 @@
 	</licenses>
 
 	<scm>
-		<url>scm:git:git@github.com:ressec/heliosphere-parent.git</url>
-		<connection>scm:git:git@github.com:ressec/heliosphere-parent.git</connection>
-		<developerConnection>scm:git:git@github.com:ressec/heliosphere-parent.git</developerConnection>
+		<url>scm:git:git@github.com:ressec/heliosphere.git</url>
+		<connection>scm:git:git@github.com:ressec/heliosphere.git</connection>
+		<developerConnection>scm:git:git@github.com:ressec/heliosphere.git</developerConnection>
 	</scm>
 
 	<organization>
 		<name>Heliosphere</name>
-		<url>https://github.com/ressec/heliosphere-parent</url>
+		<url>https://github.com/ressec/heliosphere</url>
 	</organization>
 
 	<inceptionYear>2017</inceptionYear>
@@ -44,12 +44,12 @@
 
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/ressec/heliosphere-parent/issues</url>
+		<url>https://github.com/ressec/heliosphere/issues</url>
 	</issueManagement>
 
 	<ciManagement>
 		<system>Travis CI</system>
-		<url>https://travis-ci.org/ressec/heliosphere-parent</url>
+		<url>https://travis-ci.org/ressec/heliosphere</url>
 	</ciManagement>
 
 	<properties>
@@ -385,7 +385,7 @@
 
 		</dependencies>
 	</dependencyManagement>
-	<url>https://github.com/ressec/heliosphere-parent</url>
+	<url>https://github.com/ressec/heliosphere</url>
 	<description>Parent project for the Heliosphere’s public projects.</description>
 	<modules>
 		<module>../heliosphere-terminal</module>
