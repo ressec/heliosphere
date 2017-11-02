@@ -36,7 +36,7 @@
   <scm>
   	<url>scm:git:git@github.com:ressec/heliosphere.git</url>
   	<connection>scm:git:git@github.com:ressec/heliosphere.git</connection>
-  	<developerConnection>Resse Christophe</developerConnection>
+  	<developerConnection>scm:git:git@github.com:ressec/heliosphere.git</developerConnection>
   </scm>
   <issueManagement>
   	<system>GitHub Issues</system>
