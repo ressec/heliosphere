@@ -7,9 +7,10 @@ jdk: oraclejdk8
 services:
   - docker
 
-cache:
-  - .m2/repository/
-  - target/
+#cache:
+#  - .m2/repository/
+#  - target/
+
 script: mvn clean package -f heliosphere-parent/pom.xml
 
 deploy:
