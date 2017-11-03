@@ -25,7 +25,12 @@
   		<groupId>log4j</groupId>
   		<artifactId>log4j</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>org.projectlombok</groupId>
+  		<artifactId>lombok</artifactId>
+  	</dependency>
   </dependencies>
+
   <url>https://github.com/ressec/heliosphere</url>
   <inceptionYear>2017</inceptionYear>
   <description>Provides common artefacts that are heavily used by other Heliosphere’s projects.</description>
