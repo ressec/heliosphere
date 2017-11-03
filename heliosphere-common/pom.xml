@@ -28,9 +28,9 @@
   	<dependency>
   		<groupId>org.projectlombok</groupId>
   		<artifactId>lombok</artifactId>
-  		<version>1.16.6</version>
   	</dependency>
   </dependencies>
+
   <url>https://github.com/ressec/heliosphere</url>
   <inceptionYear>2017</inceptionYear>
   <description>Provides common artefacts that are heavily used by other Heliosphere’s projects.</description>
