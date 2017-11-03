@@ -26,7 +26,7 @@ import org.heliosphere.common.resource.bundle.annotation.BundleEnumRegister;
  * @version 1.0.0
  */
 @SuppressWarnings("nls")
-@BundleEnumRegister(priority = 50)
+@BundleEnumRegister(priority = 100)
 public enum MyCustomTestBundle implements IBundle
 {
 	/**

@@ -24,7 +24,7 @@ import org.heliosphere.common.resource.bundle.annotation.BundleEnumRegister;
  * @version 1.0.0
  */
 @SuppressWarnings("nls")
-@BundleEnumRegister(priority = 50)
+@BundleEnumRegister(priority = 0) // This one must be loaded first!
 public enum BundleHeliosphereCommon implements IBundle
 {
 	/**

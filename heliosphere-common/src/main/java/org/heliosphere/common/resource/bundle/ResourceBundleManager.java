@@ -13,11 +13,13 @@ package org.heliosphere.common.resource.bundle;
 
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -128,8 +130,17 @@ public final class ResourceBundleManager
 	 * @throws ResourceBundleException Thrown if the initialization of the
 	 * resource bundle manager has failed.
 	 */
+	@SuppressWarnings("nls")
 	private static final void initialize()
 	{
+		Properties p = System.getProperties();
+		Enumeration keys = p.keys();
+		while (keys.hasMoreElements()) {
+		    String key = (String)keys.nextElement();
+		    String value = (String)p.get(key);
+		    System.out.println(key + ": " + value);
+		}
+		
 		// Auto register classes annotated with @BundleEnumRegister annotation.
 		autoRegisterAnnotated();
 	}
@@ -223,21 +234,31 @@ public final class ResourceBundleManager
 	@Synchronized
 	public static final void register(final Class<? extends IBundle> bundleEnumClass)
 	{
+		ResourceBundle bundle = null;
+
 		IBundle value = bundleEnumClass.getEnumConstants()[0]; // BUNDLE_FILENAME must be at index 0!
 		if (value.toString().equals(BUNDLE_FILENAME))
 		{
 			String filename = value.getKey();
 
-			final ResourceBundle bundle = ResourceBundle.getBundle(filename, locale);
+			try
+			{
+				bundle = ResourceBundle.getBundle(filename, locale);
 
-			// Ensure the loaded bundle is for the required language.
-			if (bundle.getLocale().getISO3Language().equals(locale.getISO3Language()))
-			{
-				register(bundleEnumClass, bundle);
+				// Ensure the loaded bundle is for the required language.
+				if (bundle.getLocale().getISO3Language().equals(locale.getISO3Language()))
+				{
+					register(bundleEnumClass, bundle);
+				}
+				else
+				{
+					throw new ResourceBundleException(BundleHeliosphereCommon.ResourceBundleError, filename, locale);
+				}
 			}
-			else
+			catch (MissingResourceException e)
 			{
-				throw new ResourceBundleException(BundleHeliosphereCommon.ResourceBundleError, filename, locale);
+				// The resource string file does not exist in the given language ... is it an error?
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -394,23 +415,30 @@ public final class ResourceBundleManager
 	@SuppressWarnings("nls")
 	private static final String retrieve(final Enum<? extends IBundle> key, final Object... parameters)
 	{
-		if (!isInitialized)
-		{
-			initialize();
-		}
-
 		final Class<? extends IBundle> bundleClass = key.getDeclaringClass();
 
-		if (BUNDLES.containsKey(bundleClass))
+		try
 		{
-			try
+			if (!isInitialized)
 			{
-				return MessageFormat.format(BUNDLES.get(bundleClass).getString(((IBundle) key).getKey()), parameters);
+				initialize();
 			}
-			catch (MissingResourceException e)
+
+			if (BUNDLES.containsKey(bundleClass))
 			{
-				throw new ResourceBundleException(BundleHeliosphereCommon.ResourceBundleInvalidKey, bundleClass.getSimpleName(), key.name(), bundleClass.getEnumConstants()[0].getKey(), getLocale(), e);
+				try
+				{
+					return MessageFormat.format(BUNDLES.get(bundleClass).getString(((IBundle) key).getKey()), parameters);
+				}
+				catch (MissingResourceException e)
+				{
+					throw new ResourceBundleException(BundleHeliosphereCommon.ResourceBundleInvalidKey, bundleClass.getSimpleName(), key.name(), bundleClass.getEnumConstants()[0].getKey(), getLocale(), e);
+				}
 			}
+		}
+		catch (Exception e)
+		{
+			return "Resource bundle key cannot be found [bundle=" + bundleClass.getName() + ", key=" + key.name() + "] due to: " + e.getMessage();
 		}
 
 		return "Resource bundle key cannot be found [bundle=" + bundleClass.getName() + ", key=" + key.name() + "]";
@@ -443,27 +471,19 @@ public final class ResourceBundleManager
 	@SuppressWarnings("nls")
 	private static final void refresh(final Locale locale)
 	{
-		if (NAMES.isEmpty())
-		{
-			ResourceBundleManager.locale = locale;
-		}
-
+		BUNDLES.clear();
 		for (Class<? extends IBundle> bundleClass : NAMES.keySet())
 		{
 			final ResourceBundle bundle = ResourceBundle.getBundle(NAMES.get(bundleClass), locale);
 			if (bundle != null && !bundle.getLocale().getLanguage().equals(locale.getLanguage()))
 			{
 				log.error("Bundle cannot be found [name=" + NAMES.get(bundleClass) + ", locale=" + locale.toString() + "]. Using default one [name=" + NAMES.get(bundleClass) + ", locale=" + getLocale().toString() + "]");
-				ResourceBundleManager.locale = english;
-			}
-			else
-			{
-				ResourceBundleManager.locale = locale;
 			}
 
-			BUNDLES.clear();
 			register(bundleClass, bundle);
 		}
+
+		ResourceBundleManager.locale = locale;
 	}
 
 	/**

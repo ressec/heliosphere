@@ -175,8 +175,8 @@ public final class ResourceBundleTest
 	@Test
 	public final void registerBundleByEnumClassInGerman()
 	{
-		ResourceBundleManager.setLocale(GERMAN);
 		ResourceBundleManager.register(BundleHeliosphereCommon.class);
+		ResourceBundleManager.setLocale(GERMAN);
 
 		Assert.assertTrue(ResourceBundleManager.getLocale().getLanguage() == GERMAN.getLanguage());
 	}
@@ -312,7 +312,7 @@ public final class ResourceBundleTest
 
 	/**
 	 * This test is using a fake resource bundle module enumeration class named: 'MyCustomTestBundle' that contains one
-	 * enumerated value mapped to an externalized resource string in resource bundle file named: 'toto-module_fr.properties'. 
+	 * enumerated value mapped to an externalized resource string in resource bundle file named: 'example-module_fr.properties'. 
 	 * This resource bundle file in french contains a key named: 'prefix1-prefix2.test.dummy'.
 	 * <p>
 	 * It tests the extraction of the dummy message entry in french from the custom test resource bundle module.
@@ -326,7 +326,7 @@ public final class ResourceBundleTest
 			ResourceBundleManager.setLocale(FRENCH);
 
 			Assert.assertTrue("Not the expected dummy message in french!", 
-					Collator.getInstance(FRENCH).equals(ResourceBundleManager.getMessage(MyCustomTestBundle.TestDummy), "Un message de test du composant: prefix1-prefix2"));
+					Collator.getInstance(FRENCH).equals(ResourceBundleManager.getMessage(MyCustomTestBundle.TestDummy), "Un message de test du composant: example-module"));
 		}
 		catch (final ResourceException e)
 		{

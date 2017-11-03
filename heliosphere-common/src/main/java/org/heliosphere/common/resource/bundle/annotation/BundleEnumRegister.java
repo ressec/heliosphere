@@ -32,7 +32,7 @@ public @interface BundleEnumRegister
 	/**
 	 * Priority value used for loading the resource bundle enumeration by the {@link ResourceBundleManager}.
 	 * <p>
-	 * Resource bundle enumerations annotated with the annotation and having a low priority value are loaded first ; default priority value is
+	 * Resource bundle enumerations annotated with this annotation and having a low priority value are loaded first ; default priority value is
 	 * {@code 100}.
 	 * <hr>
 	 * @return Priority to load the resource bundle enumeration.
