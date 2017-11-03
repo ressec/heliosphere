@@ -28,10 +28,14 @@ import org.heliosphere.common.resource.bundle.annotation.BundleEnumRegister;
 public enum BundleHeliosphereCommon implements IBundle
 {
 	/**
-	 * Bundle file name.
+	 * Resource string file name.
 	 * <p>
-	 * This enumerated value should always be created and must point to the name of the resource bundle so that the {@link ResourceBundleManager} can
-	 * discover, load and register the resource bundle file of the {@link BundleHeliosphereCommon} class.
+	 * <b>Rules:</b>:<br>
+	 * It must be prefixed by <b>bundle.</b> and must not contain the language code nor the file extension such as: <b>_en.properties</b>
+	 * <p>
+	 * This enumerated value should always be created and must point to the name of the resource bundle file 
+	 * containing the resource strings without the '_en' (language code) so that the {@link ResourceBundleManager} can
+	 * discover, load and register the resource strings contained in the file associated with this enumeration class.
 	 * <p>
 	 * <b>Example</b>:<br>
 	 * If the module's name is {@code foo.module-base}, then this enumerated value should have the value: {@code bundle.foo.module-base}
@@ -42,13 +46,12 @@ public enum BundleHeliosphereCommon implements IBundle
 	BundleFilename("bundle.heliosphere-common"),
 
 	/**
-	 * Root value for all messages contained in the {@code BundleHeliosphereCommon} component.
+	 * Root string path value.
 	 * <p>
-	 * <b>Note:</b><br>
-	 * Must have the name of the project artifact followed by the dot (.) character. 
+	 * This is the root path in the resource string files to access the resource string values.
 	 * <p>
 	 * <b>Example</b>:<br>
-	 * If the module's name is {@code foo.module-base}, then this enumerated value should have the value: {@code foo.module-base}
+	 * If the resource strings start all with 'level1-level2.', then this enumerated value should have the value: level1-level2.
 	 * <p>
 	 * <b>Important</b>:<br>
 	 * DO NOT DELETE THIS ENTRY!
@@ -60,7 +63,7 @@ public enum BundleHeliosphereCommon implements IBundle
 	 */
 
 	/**
-	 * A dummy message from component: demeter-base.
+	 * A dummy message from component: 'component name'.
 	 */
 	TestDummy("test.dummy"),
 

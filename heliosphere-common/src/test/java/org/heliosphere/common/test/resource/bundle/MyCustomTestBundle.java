@@ -50,8 +50,10 @@ public enum MyCustomTestBundle implements IBundle
 	/**
 	 * Root string path value.
 	 * <p>
+	 * This is the root path in the resource string files to access the resource string values.
+	 * <p>
 	 * <b>Example</b>:<br>
-	 * If the resource strings start all with 'level1.level2', then this enumerated value should have the value: level1.level2.
+	 * If the resource strings start all with 'level1-level2.', then this enumerated value should have the value: level1-level2.
 	 * <p>
 	 * <b>Important</b>:<br>
 	 * DO NOT DELETE THIS ENTRY!
