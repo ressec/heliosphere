@@ -15,6 +15,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.heliosphere.common.resource.bundle.IBundle;
+import org.heliosphere.common.resource.bundle.ResourceBundleManager;
+
 /**
  * This annotation is used to make a resource bundle enumeration file to be auto registered by the {@link ResourceBundleManager}. This annotation is
  * intended to be placed on enumeration types inheriting the {@link IBundle} interface.
