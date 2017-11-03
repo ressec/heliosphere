@@ -13,13 +13,11 @@ package org.heliosphere.common.resource.bundle;
 
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -133,14 +131,6 @@ public final class ResourceBundleManager
 	@SuppressWarnings("nls")
 	private static final void initialize()
 	{
-		Properties p = System.getProperties();
-		Enumeration keys = p.keys();
-		while (keys.hasMoreElements()) {
-		    String key = (String)keys.nextElement();
-		    String value = (String)p.get(key);
-		    System.out.println(key + ": " + value);
-		}
-		
 		// Auto register classes annotated with @BundleEnumRegister annotation.
 		autoRegisterAnnotated();
 	}
