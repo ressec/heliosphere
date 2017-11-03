@@ -8,14 +8,13 @@ services:
   - docker
 
 cache:
-  directories:
-  - "$HOME/.cache"
-
+  - .m2/repository/
+  - target/
 script: mvn clean package -f heliosphere-parent/pom.xml
 
 deploy:
   provider: script
-  script: "cp heliosphere-parent/etc/deploy-settings.xml $HOME/.m2/settings.xml && mvn deploy"
+  script: "cp heliosphere-parent/etc/deploy-settings.xml $HOME/.m2/settings.xml && mvn deploy -f heliosphere-parent/pom.xmls"
   skip_cleanup: true
   on:
     tags: true
