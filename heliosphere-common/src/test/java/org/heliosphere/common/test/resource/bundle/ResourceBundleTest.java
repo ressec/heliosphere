@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 import java.text.Collator;
 import java.util.Locale;
 
+import org.heliosphere.common.person.type.HonorificType;
 import org.heliosphere.common.resource.ResourceException;
 import org.heliosphere.common.resource.bundle.BundleHeliosphereCommon;
 import org.heliosphere.common.resource.bundle.ResourceBundleManager;
@@ -327,6 +328,32 @@ public final class ResourceBundleTest
 
 			Assert.assertTrue("Not the expected dummy message in french!", 
 					Collator.getInstance(FRENCH).equals(ResourceBundleManager.getMessage(MyCustomTestBundle.TestDummy), "Un message de test du composant: example-module"));
+		}
+		catch (final ResourceException e)
+		{
+			fail(e.getLocalizedMessage());
+		}
+	}
+	
+	/**
+	 * Test the extraction of the 'Mister' {@link HonorificType} in english.
+	 */
+	@SuppressWarnings("static-method")
+	@Test
+	public final void retrieveHonorificTypeForMisterInEnglish()
+	{
+		try
+		{
+			ResourceBundleManager.setLocale(ENGLISH);
+
+			Assert.assertTrue("Not the expected long value returned!", 
+					Collator.getInstance(ENGLISH).equals(HonorificType.MR.getLongTitle(), "Mister"));
+
+			Assert.assertTrue("Not the expected short value returned!", 
+					Collator.getInstance(ENGLISH).equals(HonorificType.MR.getShortTitle(), "MR"));
+
+			Assert.assertTrue("Not the expected help value returned!", 
+					Collator.getInstance(ENGLISH).equals(HonorificType.MR.getHelpTitle(), "For men, regardless of marital status."));
 		}
 		catch (final ResourceException e)
 		{
