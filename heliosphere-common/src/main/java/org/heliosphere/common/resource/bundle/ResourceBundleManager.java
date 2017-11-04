@@ -65,6 +65,8 @@ public final class ResourceBundleManager
 	 */
 	private static final Map<Class<? extends IBundle>, String> NAMES = new HashMap<>(1, 0.75f);
 
+	private static final Map<Class<? extends Enum<?>>, Map<Locale, ResourceBundle>> METHOD_BUNDLES = new HashMap<>(10, 0.75f); 
+	
 	/**
 	 * English locale.
 	 */
@@ -128,7 +130,6 @@ public final class ResourceBundleManager
 	 * @throws ResourceBundleException Thrown if the initialization of the
 	 * resource bundle manager has failed.
 	 */
-	@SuppressWarnings("nls")
 	private static final void initialize()
 	{
 		// Auto register classes annotated with @BundleEnumRegister annotation.
@@ -508,7 +509,7 @@ public final class ResourceBundleManager
 	 * @param locale {@link Locale} to use for resource string retrieval.
 	 * @return Resource bundle string.
 	 */
-	@SuppressWarnings("nls")
+	@SuppressWarnings({ "nls", "unchecked" })
 	public static final String getResourceForMethodName(@NonNull final Class<? extends Enum<?>> eClass, final Enum<?> e, final Locale locale)
 	{
 		String key = null;
@@ -539,7 +540,28 @@ public final class ResourceBundleManager
 				BundleEnum annotation = method.getAnnotation(BundleEnum.class);
 				if (annotation != null && method.getName().equals(methodName))
 				{
-					bundle = ResourceBundle.getBundle(annotation.file(), locale);
+					// Does the resource bundle has already been loaded?
+					Class<?> aClass = method.getDeclaringClass();
+					Map<Locale, ResourceBundle> map = METHOD_BUNDLES.get(aClass);
+					if (map == null)
+					{
+						map = new HashMap<>();
+						bundle = ResourceBundle.getBundle(annotation.file(), locale);
+						map.put(locale, bundle);
+						METHOD_BUNDLES.put((Class<? extends Enum<?>>) aClass, map);
+					}
+					else 
+					{
+						bundle = map.get(locale);
+						if (bundle == null)
+						{
+							bundle = ResourceBundle.getBundle(annotation.file(), locale);
+							map.put(locale, bundle);
+							METHOD_BUNDLES.put((Class<? extends Enum<?>>) aClass, map);
+						}
+					}
+					
+					//bundle = ResourceBundle.getBundle(annotation.file(), locale);
 					key = annotation.path() + "." + e.name();
 					return bundle.getString(key);
 				}
