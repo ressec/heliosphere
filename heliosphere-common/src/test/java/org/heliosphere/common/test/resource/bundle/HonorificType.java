@@ -23,7 +23,6 @@ import com.neovisionaries.i18n.LanguageCode;
  * @author  <a href="mailto:christophe.resse@gmail.com">Resse Christophe - Heliosphere</a>
  * @version 1.0.0
  */
-//@BundleEnumFile(file = "honorific-title")
 public enum HonorificType implements IHeliosphereType
 {
 	/**
@@ -131,8 +130,7 @@ public enum HonorificType implements IHeliosphereType
 	 * <hr>
 	 * @return Short honorific title.
 	 */
-	//@BundleEnumKey(key = "enum.honorific.short")
-	@BundleEnum(file = "bundle.honorific-title", path = "enum.honorific.short")
+	@BundleEnum(file = "bundle.type.honorific-title", path = "enum.honorific.short")
 	public final String getShortTitle()
 	{
 		return ResourceBundleManager.getResourceForMethodName(this.getClass(), this);
@@ -144,7 +142,7 @@ public enum HonorificType implements IHeliosphereType
 	 * @param language {@link LanguageCode} to be used.
 	 * @return Short honorific title.
 	 */
-	@BundleEnum(file = "bundle.honorific-title", path = "enum.honorific.short")
+	@BundleEnum(file = "bundle.type.honorific-title", path = "enum.honorific.short")
 	public final String getShortTitle(final LanguageCode language)
 	{
 		return ResourceBundleManager.getResourceForMethodName(this.getClass(), this, language.toLocale());
@@ -155,7 +153,7 @@ public enum HonorificType implements IHeliosphereType
 	 * <hr>
 	 * @return Long honorific title.
 	 */
-	@BundleEnum(file = "bundle.honorific-title", path = "enum.honorific.long")
+	@BundleEnum(file = "bundle.type.honorific-title", path = "enum.honorific.long")
 	public final String getLongTitle()
 	{
 		return ResourceBundleManager.getResourceForMethodName(this.getClass(), this);
@@ -167,7 +165,7 @@ public enum HonorificType implements IHeliosphereType
 	 * @param language {@link LanguageCode} to be used.
 	 * @return Long honorific title.
 	 */
-	@BundleEnum(file = "bundle.honorific-title", path = "enum.honorific.long")
+	@BundleEnum(file = "bundle.type.honorific-title", path = "enum.honorific.long")
 	public final String getLongTitle(final LanguageCode language)
 	{
 		return ResourceBundleManager.getResourceForMethodName(this.getClass(), this, language.toLocale());
@@ -178,7 +176,7 @@ public enum HonorificType implements IHeliosphereType
 	 * <hr>
 	 * @return Honorific title help.
 	 */
-	@BundleEnum(file = "bundle.honorific-title", path = "enum.honorific.help")
+	@BundleEnum(file = "bundle.type.honorific-title", path = "enum.honorific.help")
 	public final String getHelpTitle()
 	{
 		return ResourceBundleManager.getResourceForMethodName(this.getClass(), this);
@@ -190,7 +188,7 @@ public enum HonorificType implements IHeliosphereType
 	 * @param language {@link LanguageCode} to be used.
 	 * @return Honorific title help.
 	 */
-	@BundleEnum(file = "bundle.honorific-title", path = "enum.honorific.help")
+	@BundleEnum(file = "bundle.type.honorific-title", path = "enum.honorific.help")
 	public final String getHelpTitle(final LanguageCode language)
 	{
 		return ResourceBundleManager.getResourceForMethodName(this.getClass(), this, language.toLocale());

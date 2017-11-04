@@ -333,4 +333,30 @@ public final class ResourceBundleTest
 			fail(e.getLocalizedMessage());
 		}
 	}
+	
+	/**
+	 * Test the extraction of the 'Mister' {@link HonorificType} in english.
+	 */
+	@SuppressWarnings("static-method")
+	@Test
+	public final void retrieveHonorificTypeForMisterInEnglish()
+	{
+		try
+		{
+			ResourceBundleManager.setLocale(ENGLISH);
+
+			Assert.assertTrue("Not the expected long value returned!", 
+					Collator.getInstance(ENGLISH).equals(HonorificType.MR.getLongTitle(), "Mister"));
+
+			Assert.assertTrue("Not the expected short value returned!", 
+					Collator.getInstance(ENGLISH).equals(HonorificType.MR.getShortTitle(), "MR"));
+
+			Assert.assertTrue("Not the expected help value returned!", 
+					Collator.getInstance(ENGLISH).equals(HonorificType.MR.getHelpTitle(), "For men, regardless of marital status."));
+		}
+		catch (final ResourceException e)
+		{
+			fail(e.getLocalizedMessage());
+		}
+	}
 }
