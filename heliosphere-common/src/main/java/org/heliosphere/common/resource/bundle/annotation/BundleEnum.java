@@ -15,7 +15,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.heliosphere.common.test.resource.bundle.HonorificType;
+import org.heliosphere.common.person.type.HonorificType;
 
 /**
  * This annotation is used to associate resource bundles to a resource bundle enumeration.

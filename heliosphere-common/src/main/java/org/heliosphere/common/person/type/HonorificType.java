@@ -9,9 +9,9 @@
  * License can be consulted at http://www.apache.org/licenses/LICENSE-2.0
  * ---------------------------------------------------------------------------
  */
-package org.heliosphere.common.test.resource.bundle;
+package org.heliosphere.common.person.type;
 
-import org.heliosphere.common.IHeliosphereType;
+import org.heliosphere.common.IHeliosphere;
 import org.heliosphere.common.resource.bundle.ResourceBundleManager;
 import org.heliosphere.common.resource.bundle.annotation.BundleEnum;
 
@@ -23,7 +23,7 @@ import com.neovisionaries.i18n.LanguageCode;
  * @author  <a href="mailto:christophe.resse@gmail.com">Resse Christophe - Heliosphere</a>
  * @version 1.0.0
  */
-public enum HonorificType implements IHeliosphereType
+public enum HonorificType implements IHeliosphere
 {
 	/**
 	 * For men, regardless of marital status.

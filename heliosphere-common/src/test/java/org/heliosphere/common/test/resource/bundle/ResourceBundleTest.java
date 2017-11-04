@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 import java.text.Collator;
 import java.util.Locale;
 
+import org.heliosphere.common.person.type.HonorificType;
 import org.heliosphere.common.resource.ResourceException;
 import org.heliosphere.common.resource.bundle.BundleHeliosphereCommon;
 import org.heliosphere.common.resource.bundle.ResourceBundleManager;
