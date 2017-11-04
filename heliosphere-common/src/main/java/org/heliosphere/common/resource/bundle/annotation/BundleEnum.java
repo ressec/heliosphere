@@ -15,6 +15,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.heliosphere.common.test.resource.bundle.HonorificType;
+
 /**
  * This annotation is used to associate resource bundles to a resource bundle enumeration.
  * <p>
@@ -37,20 +39,23 @@ public @interface BundleEnum
 	 * <p>
 	 * <b>Example:</b>
 	 * <p>
-	 * <code>file="bundle.icare-base"</code>
+	 * If the resource bundles are located in the 'src/main/resources/bundle/type/resource-bundle-file_**.properties' 
+	 * resource files then the 'file' property will have the value:
+	 * <p>
+	 * <code>file="bundle.type.resource-bundle-file"</code>
 	 * <hr>
 	 * @return Resource bundle file name.
 	 */
 	String file();
 
 	/**
-	 * Path of the resource key in the resource bundle file.
+	 * Path of the resource key.
 	 * <p>
 	 * <b>Example:</b>
 	 * <p>
-	 * <code>path="icare-base.enum.honorific.long"</code>
+	 * <code>path="path.to.the.resource.string.key"</code>
 	 * <hr>
-	 * @return Path of the enumerated values to bind.
+	 * @return Path of the resource string to use.
 	 */
 	String path();
 }
