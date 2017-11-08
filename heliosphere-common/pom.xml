@@ -37,6 +37,10 @@
 		<artifactId>nv-i18n</artifactId>
 	</dependency>
 
+	<dependency>
+		<groupId>com.google.guava</groupId>
+		<artifactId>guava</artifactId>
+	</dependency>
   </dependencies>
 
   <url>https://github.com/ressec/heliosphere</url>
