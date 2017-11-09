@@ -9,7 +9,7 @@
  * License can be consulted at http://www.apache.org/licenses/LICENSE-2.0
  * ---------------------------------------------------------------------------
  */
-package org.heliosphere.common.command.internal;
+package org.heliosphere.common.command.exception;
 
 import org.heliosphere.common.exception.AbstractCheckedException;
 import org.heliosphere.common.exception.IExceptionType;

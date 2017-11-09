@@ -146,6 +146,10 @@ public abstract class AbstractResource implements IResource
 							return false;
 						}
 					}
+					else 
+					{
+						return false;
+					}
 				}
 				catch (URISyntaxException urie)
 				{
@@ -171,14 +175,24 @@ public abstract class AbstractResource implements IResource
 	private final boolean loadRelativeSeparator(String pathname)
 	{
 		URL url = null;
+		String path = null;
 
 		// Try to remove the leading file separator, if one exist.
-		if (pathname.startsWith(File.separator))
+		if (pathname.startsWith(File.separator) || pathname.startsWith("."))
 		{
 			try
 			{
 				// Maybe the file pathname is relative.
-				url = Thread.currentThread().getContextClassLoader().getResource(pathname.replaceFirst(File.separator, ""));
+				if (pathname.startsWith(File.separator))
+				{
+					path = pathname.replaceFirst(File.separator, "");
+				}
+				else 
+				{
+					path = pathname.replaceFirst("." + File.separator, "");
+				}
+				
+				url = Thread.currentThread().getContextClassLoader().getResource(path);
 				this.file = new File(url.toURI());
 				if (!file.exists())
 				{

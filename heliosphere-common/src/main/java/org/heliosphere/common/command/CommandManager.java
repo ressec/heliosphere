@@ -1,4 +1,4 @@
-package org.heliosphere.common.command.internal;
+package org.heliosphere.common.command;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,11 +11,13 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.NotImplementedException;
+import org.heliosphere.common.command.exception.CommandManagerException;
 import org.heliosphere.common.command.internal.metadata.CommandCategory;
 import org.heliosphere.common.command.internal.metadata.CommandDomain;
 import org.heliosphere.common.command.internal.metadata.CommandGroup;
 import org.heliosphere.common.command.internal.metadata.CommandMetadata;
 import org.heliosphere.common.command.internal.metadata.CommandParameterMetadata;
+import org.heliosphere.common.resource.ResourceException;
 import org.heliosphere.common.resource.internal.Resource;
 
 import com.google.common.collect.Lists;
@@ -296,6 +298,16 @@ public class CommandManager
 	}
 
 	/**
+	 * Returns the number of registered command definitions.
+	 * <p>
+	 * @return Number of registered command definitions.
+	 */
+	public static final int getCommandCount()
+	{
+		return COMMANDS.size();
+	}
+	
+	/**
 	 * Registers the command definitions declared in the given file.
 	 * <p>
 	 * @param filename Name of the file containing the command definitions to register.
@@ -304,30 +316,37 @@ public class CommandManager
 	@SuppressWarnings("nls")
 	public static final void registerFromFile(final @NonNull String filename) throws CommandManagerException
 	{
-		Resource file = new Resource(filename);
-		String extension = FilenameUtils.getExtension(file.getFile().getName()); 
-		
-		if (extension.equalsIgnoreCase(FILE_PROPERTIES))
+		try
 		{
-			registerFromProperties(file);
-		}
-		else 
-		{
-			if (extension.equalsIgnoreCase(FILE_XML))
+			Resource file = new Resource(filename);
+			String extension = FilenameUtils.getExtension(file.getFile().getName()); 
+			
+			if (extension.equalsIgnoreCase(FILE_PROPERTIES))
 			{
-				registerFromXML(file);
+				registerFromProperties(file);
 			}
 			else 
 			{
-				if (extension.equalsIgnoreCase(FILE_JSON))
+				if (extension.equalsIgnoreCase(FILE_XML))
 				{
-					registerFromJSON(file);
+					registerFromXML(file);
 				}
 				else 
 				{
-					throw new CommandManagerException("Only properties, XML or JSON files are accepted!");
+					if (extension.equalsIgnoreCase(FILE_JSON))
+					{
+						registerFromJSON(file);
+					}
+					else 
+					{
+						throw new CommandManagerException("Only properties, XML or JSON files are accepted!");
+					}
 				}
 			}
+		}
+		catch (ResourceException e)
+		{
+			throw new CommandManagerException(e);
 		}
 	}
 	
