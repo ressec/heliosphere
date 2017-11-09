@@ -11,6 +11,7 @@
  */
 package org.heliosphere.common.test;
 
+import org.heliosphere.common.test.command.CommandDefinitionTest;
 import org.heliosphere.common.test.resource.bundle.ResourceBundleTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -23,7 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @version 1.0.0
  */
 @RunWith(Suite.class)
-@SuiteClasses({ ResourceBundleTest.class })
+@SuiteClasses({ ResourceBundleTest.class, CommandDefinitionTest.class })
 public class CommonTestSuite
 {
 	// Empty.
