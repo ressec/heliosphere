@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>geocoding</artifactId>
+  <name>Heliosphere's Geocoding project</name>
+  <parent>
+  	<groupId>org.heliosphere</groupId>
+  	<artifactId>parent</artifactId>
+  	<version>0.0.1-SNAPSHOT</version>
+  	<relativePath>../heliosphere-parent</relativePath>
+  </parent>
+  
+  <dependencies>
+  
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  	</dependency>
+
+  	<dependency>
+  		<groupId>commons-io</groupId>
+  		<artifactId>commons-io</artifactId>
+  	</dependency>
+
+  	<dependency>
+  		<groupId>commons-configuration</groupId>
+  		<artifactId>commons-configuration</artifactId>
+  	</dependency>
+
+  	<dependency>
+  		<groupId>log4j</groupId>
+  		<artifactId>log4j</artifactId>
+  	</dependency>
+
+  	<dependency>
+  		<groupId>org.projectlombok</groupId>
+  		<artifactId>lombok</artifactId>
+  	</dependency>
+
+	<dependency>
+		<groupId>com.neovisionaries</groupId>
+		<artifactId>nv-i18n</artifactId>
+	</dependency>
+
+	<dependency>
+		<groupId>com.google.guava</groupId>
+		<artifactId>guava</artifactId>
+	</dependency>
+
+	<dependency>
+		<groupId>com.google.maps</groupId>
+		<artifactId>google-maps-services</artifactId>
+		<version>0.2.4</version>
+	</dependency>
+  </dependencies>
+
+  <url>https://github.com/ressec/heliosphere</url>
+  <inceptionYear>2017</inceptionYear>
+  <description>Provides artifacts that manipulate and demonstarte the Google Geocoding APIs.</description>
+  <organization>
+  	<name>Heliosphere</name>
+  	<url>https://github.com/ressec/heliosphere</url>
+  </organization>
+  <scm>
+  	<url>scm:git:git@github.com:ressec/heliosphere.git</url>
+  	<connection>scm:git:git@github.com:ressec/heliosphere.git</connection>
+  	<developerConnection>scm:git:git@github.com:ressec/heliosphere.git</developerConnection>
+  </scm>
+  <issueManagement>
+  	<system>GitHub Issues</system>
+  	<url>https://github.com/ressec/heliosphere/issues</url>
+  </issueManagement>
+  <ciManagement>
+  	<system>Travis CI</system>
+  	<url>https://travis-ci.org/ressec/heliosphere</url>
+  </ciManagement>
+</project>

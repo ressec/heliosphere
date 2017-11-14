@@ -397,5 +397,6 @@
 		<module>../heliosphere-terminal</module>
 		
 		<module>../heliosphere-common</module>
+		<module>../heliosphere-geocoding</module>
 	</modules>
 </project>
