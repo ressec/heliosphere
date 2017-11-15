@@ -41,6 +41,12 @@
 		<groupId>com.google.guava</groupId>
 		<artifactId>guava</artifactId>
 	</dependency>
+
+	<dependency>
+		<groupId>eu.infomas</groupId>
+		<artifactId>annotation-detector</artifactId>
+	</dependency>
+
   </dependencies>
 
   <url>https://github.com/ressec/heliosphere</url>
