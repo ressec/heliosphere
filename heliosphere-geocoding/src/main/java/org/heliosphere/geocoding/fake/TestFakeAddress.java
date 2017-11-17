@@ -31,7 +31,7 @@ public class TestFakeAddress
 	@SuppressWarnings("nls")
 	public static void main(String[] arguments)
 	{
-		Faker faker = new Faker(Locale.GERMANY);
+		Faker faker = new Faker(Locale.FRENCH);
 		StringBuilder address = null;
 		
 		for (int i = 0; i < 50; i++)
@@ -42,7 +42,8 @@ public class TestFakeAddress
 					.append(" ")
 					.append(faker.address().city())
 					.append(" ")
-					.append(faker.address().country());
+					//.append(faker.address().country()); // The Faker API has a bug!
+					.append("France");
 			
 			System.out.println(String.format("Address: %1s", address.toString()));
 		}
