@@ -6,7 +6,7 @@ insert into public.address (unformatted, is_fake, locale) values ('31 r Abbé Gr
 insert into public.address (unformatted, is_fake, locale) values ('3 r Dardanelles 75017 Paris', false, 'FR');
 insert into public.address (unformatted, is_fake, locale) values ('23 r Saint Dizier 54000 Nancy', false, 'FR');
 insert into public.address (unformatted, is_fake, locale) values ('45 r royale 62100 calais', false, 'FR');
-insert into public.address (unformatted, is_fake, locale) values ('12 r frères lumière 25000 besançon', false, 'FR');
+insert into public.address (unformatted, is_fake, locale) values ('4000 r frères lumière 25000 besançon', false, 'FR');
 insert into public.address (unformatted, is_fake, locale) values ('9 pl fernand lafargue 33000 bordeaux', false, 'FR');
 
 /* BELGIUM real addresses */
@@ -89,4 +89,3 @@ insert into public.address (unformatted, is_fake, locale) values ('7051 Harrison
 insert into public.address (unformatted, is_fake, locale) values ('1207 Canopy Cir 23124 New Kent', false, 'US');
 insert into public.address (unformatted, is_fake, locale) values ('9500 Boulevard Rd 23140 New Kent - Providence Forge', false, 'US');
 insert into public.address (unformatted, is_fake, locale) values ('13501 Campground Rd 23089 New Kent - Lanexa', false, 'US');
-
