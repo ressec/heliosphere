@@ -6,6 +6,9 @@ language:
 services:
   - postgresql
 
+addons:
+  postgresql: "9.6"
+
 jdk: 
   - oraclejdk8
 
