@@ -9,7 +9,7 @@
  * License can be consulted at http://www.apache.org/licenses/LICENSE-2.0
  * ---------------------------------------------------------------------------
  */
-package org.heliosphere.geocoding.sample;
+package org.heliosphere.geocoding.fake;
 
 import java.util.Locale;
 
@@ -22,7 +22,7 @@ import com.github.javafaker.Faker;
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse - Heliosphere</a>
  * @version 1.0.0
  */
-public class TestFakeChuckNorris
+public class TestFakePhoneNumber
 {	
 	/**
 	 * Java application main-entry point.
@@ -33,12 +33,18 @@ public class TestFakeChuckNorris
 	public static void main(String[] arguments)
 	{
 		Faker faker = new Faker(Locale.FRENCH);
-		StringBuilder fact = null;
+		StringBuilder phone = null;
 		
 		for (int i = 0; i < 10; i++)
 		{
-			fact = new StringBuilder(faker.chuckNorris().fact());
-			System.out.println(String.format("Fact: %1s", fact));
+			phone = new StringBuilder(faker.phoneNumber().phoneNumber());
+			System.out.println(String.format("Phone number: %1s", phone));
+		}
+
+		for (int i = 0; i < 10; i++)
+		{
+			phone = new StringBuilder(faker.phoneNumber().cellPhone());
+			System.out.println(String.format("Cell number: %1s", phone));
 		}
 	}
 }

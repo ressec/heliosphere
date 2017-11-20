@@ -9,20 +9,19 @@
  * License can be consulted at http://www.apache.org/licenses/LICENSE-2.0
  * ---------------------------------------------------------------------------
  */
-package org.heliosphere.geocoding.sample;
+package org.heliosphere.geocoding.fake;
 
 import java.util.Locale;
 
 import com.github.javafaker.Faker;
 
 /**
- * A sample Java application that generates a set of fake phone numbers followed
- * by a set of fake cell numbers in a pre-defined language.
+ * A sample Java application that generates a set of fake addresses in a pre-defined language.
  * <hr>
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse - Heliosphere</a>
  * @version 1.0.0
  */
-public class TestFakePhoneNumber
+public class TestFakeAddress
 {	
 	/**
 	 * Java application main-entry point.
@@ -33,18 +32,20 @@ public class TestFakePhoneNumber
 	public static void main(String[] arguments)
 	{
 		Faker faker = new Faker(Locale.FRENCH);
-		StringBuilder phone = null;
+		StringBuilder address = null;
 		
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 50; i++)
 		{
-			phone = new StringBuilder(faker.phoneNumber().phoneNumber());
-			System.out.println(String.format("Phone number: %1s", phone));
-		}
-
-		for (int i = 0; i < 10; i++)
-		{
-			phone = new StringBuilder(faker.phoneNumber().cellPhone());
-			System.out.println(String.format("Cell number: %1s", phone));
+			address = new StringBuilder(faker.address().streetAddress())
+					.append(" ")
+					.append(faker.address().zipCode())
+					.append(" ")
+					.append(faker.address().city())
+					.append(" ")
+					//.append(faker.address().country()); // The Faker API has a bug!
+					.append("France");
+			
+			System.out.println(String.format("Address: %1s", address.toString()));
 		}
 	}
 }

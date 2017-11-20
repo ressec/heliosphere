@@ -1,15 +1,24 @@
 sudo: false
 
-language: java
+language: 
+  - java
 
-jdk: oraclejdk8
+jdk: 
+  - oraclejdk8
 
 services:
   - docker
+  - postgresql
+
+addons:
+  - postgresql: "9.6"
 
 cache:
-  - .m2/repository/
-  - target/
+  - $HOME/.m2
+  #- target/
+
+before_script:
+  - psql -c "CREATE DATABASE geolocation;" -U postgres
 
 script: mvn clean package -f heliosphere-parent/pom.xml
 
