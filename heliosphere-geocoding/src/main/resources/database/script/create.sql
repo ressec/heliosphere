@@ -1,4 +1,4 @@
-create schema if not exists public authorization test;
+create schema if not exists public authorization postgres;
 
 create type day_of_week as enum ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY');
 
