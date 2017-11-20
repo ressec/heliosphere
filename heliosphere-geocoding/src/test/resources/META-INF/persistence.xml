@@ -6,8 +6,8 @@
 		<class>org.heliosphere.geocoding.persistence.Address</class>
 		<properties>
 			<property name="javax.persistence.jdbc.url" value="@jdbc.url@"/>
-			<property name="javax.persistence.jdbc.user" value="test"/>
-			<property name="javax.persistence.jdbc.password" value="test"/>
+			<property name="javax.persistence.jdbc.user" value="postgres"/>
+			<property name="javax.persistence.jdbc.password" value=""/>
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
 			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
 			<property name="javax.persistence.schema-generation.create-source" value="script"/>

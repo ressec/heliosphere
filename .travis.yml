@@ -21,7 +21,7 @@ before_script:
   - psql -c "CREATE DATABASE geolocation;" -U postgres
   #- psql -d geolocation -c "ALTER SCHEMA public OWNER TO test;"
   #- psql -d geolocation -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO test;"
-  - cp database.yml.travis database.yml
+  #- cp database.yml.travis database.yml
 
 script: mvn clean package -f heliosphere-parent/pom.xml
 
