@@ -19,7 +19,8 @@ cache:
 before_script:
   - psql -c "CREATE USER test WITH PASSWORD 'test';" -U postgres
   - psql -c "CREATE DATABASE geolocation;" -U postgres
-  - psql -d geolocation -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO test;"
+  - psql -c "ALTER SCHEMA public OWNER TO test;"
+  #- psql -d geolocation -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO test;"
   #- cp config/database.yml.travis config/database.yml
 
 script: mvn clean package -f heliosphere-parent/pom.xml
