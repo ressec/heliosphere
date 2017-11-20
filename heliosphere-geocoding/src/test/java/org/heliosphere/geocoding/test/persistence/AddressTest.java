@@ -114,7 +114,7 @@ public class AddressTest
 	@Test
 	public final void testFindAll()
 	{
-		final int COUNT = 52;
+		final int COUNT = 88;
 
 		try
 		{
@@ -145,7 +145,7 @@ public class AddressTest
 			{
 				manager.getTransaction().begin();
 
-				for (int i = 0; i < 50; i++)
+				for (int i = 0; i < 10; i++)
 				{
 					text = new StringBuilder(faker.address().streetAddress())
 							.append(" ")
@@ -157,7 +157,7 @@ public class AddressTest
 							.append("France");
 	
 					address = new Address(text.toString(), true);
-
+					address.setLocale("FR");
 					manager.persist(address);
 				}
 
@@ -189,7 +189,7 @@ public class AddressTest
 			{
 				manager.getTransaction().begin();
 
-				for (int i = 0; i < 50; i++)
+				for (int i = 0; i < 10; i++)
 				{
 					text = new StringBuilder(faker.address().streetAddress())
 							.append(" ")
@@ -201,7 +201,7 @@ public class AddressTest
 							.append("Italia");
 	
 					address = new Address(text.toString(), true);
-
+					address.setLocale("IT");
 					manager.persist(address);
 				}
 
