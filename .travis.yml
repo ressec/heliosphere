@@ -1,6 +1,7 @@
 sudo: false
 
-language: java
+language: 
+  - java
 
 jdk: 
   - oraclejdk7
@@ -14,8 +15,8 @@ addons:
   - postgresql: "9.6"
 
 cache:
-  directories:
-    - $HOME/.m2
+  - $HOME/.m2
+  #- target/
 
 before_script:
   - psql -c "CREATE DATABASE geolocation;" -U postgres
