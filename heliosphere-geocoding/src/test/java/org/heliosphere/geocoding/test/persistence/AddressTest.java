@@ -139,6 +139,7 @@ public class AddressTest
 
 		try
 		{
+			// To get all addresses, use findAll instead.
 			List<Address> addresses = manager.createNamedQuery("Address.test.findIBMAddress").getResultList();
 			if (addresses.isEmpty())
 			{
@@ -148,6 +149,11 @@ public class AddressTest
 			for (Address address : addresses)
 			{
 				geocoder.resolve(address);
+
+				Assert.assertTrue(
+						String.format("Geolocation result for address: %1s should have returned: FOUND but has returned %2s",
+								address.getUnformatted(), address.getResult()),
+						address.getResult().equals("FOUND"));
 
 				try
 				{
@@ -164,9 +170,6 @@ public class AddressTest
 					fail(e.getMessage());
 				}
 			}
-
-
-			Assert.assertTrue(String.format("findAll() should have returned %d elements, but it returned: %d", 1, Integer.valueOf(addresses.size())), addresses.size() == 1);
 		}
 		catch (Exception e)
 		{
