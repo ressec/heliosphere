@@ -1,7 +1,7 @@
 /*
  * Copyright(c) 2017 - Trias Group Corp.
  * ---------------------------------------------------------------------------
- * This file is part of the eMeal's project which is licensed under the 
+ * This file is part of the eMeal's project which is licensed under the
  * Apache license version 2 and use is subject to license terms.
  * You should have received a copy of the license with the project's artifact
  * binaries and/or sources.
@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.heliosphere.geocoding.Geocoder;
 import org.heliosphere.geocoding.persistence.Address;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -128,6 +129,52 @@ public class AddressTest
 	}
 
 	/**
+	 * Test the geocoder for one of the address using the Google geocoding API.
+	 */
+	@SuppressWarnings({ "static-method", "nls" })
+	@Test
+	public final void testGeocoder()
+	{
+		Geocoder geocoder = new Geocoder();
+
+		try
+		{
+			List<Address> addresses = manager.createNamedQuery("Address.test.findIBMAddress").getResultList();
+			if (addresses.isEmpty())
+			{
+				fail("Should have returned one address for!");
+			}
+
+			for (Address address : addresses)
+			{
+				geocoder.resolve(address);
+
+				try
+				{
+					if (!manager.getTransaction().isActive())
+					{
+						manager.getTransaction().begin();
+						manager.persist(address);
+						manager.getTransaction().commit();
+					}
+				}
+				catch (Exception e)
+				{
+					manager.getTransaction().rollback();
+					fail(e.getMessage());
+				}
+			}
+
+
+			Assert.assertTrue(String.format("findAll() should have returned %d elements, but it returned: %d", 1, Integer.valueOf(addresses.size())), addresses.size() == 1);
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+
+	/**
 	 * Test the creation of fake unformatted addresses for France.
 	 */
 	@SuppressWarnings({ "static-method", "nls" })
@@ -155,7 +202,7 @@ public class AddressTest
 							.append(" ")
 							//.append(faker.address().country());
 							.append("France");
-	
+
 					address = new Address(text.toString(), true);
 					address.setLocale("FR");
 					manager.persist(address);
@@ -199,7 +246,7 @@ public class AddressTest
 							.append(" ")
 							//.append(faker.address().country());
 							.append("Italia");
-	
+
 					address = new Address(text.toString(), true);
 					address.setLocale("IT");
 					manager.persist(address);

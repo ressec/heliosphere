@@ -1,3 +1,14 @@
+/*
+ * Copyright(c) 2017-2017 Heliosphere Corp.
+ * ---------------------------------------------------------------------------
+ * This file is part of the Heliosphere's project which is licensed under the
+ * Apache license version 2 and use is subject to license terms.
+ * You should have received a copy of the license with the project's artifact
+ * binaries and/or sources.
+ * 
+ * License can be consulted at http://www.apache.org/licenses/LICENSE-2.0
+ * ---------------------------------------------------------------------------
+ */
 package org.heliosphere.geocoding;
 
 import java.io.IOException;
@@ -7,7 +18,6 @@ import java.util.Locale;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.heliosphere.geocoding.persistence.Address;
 
@@ -24,13 +34,13 @@ import com.google.maps.model.GeocodingResult;
 
 import lombok.NonNull;
 
-public final class GeocodeAddress
+public final class Geocoder
 {
-	/**
-	 * Persistence unit name.
-	 */
-	@SuppressWarnings("nls")
-	private final static String PERSISTENCE_UNIT = "org.geocode.jpa";
+	//	/**
+	//	 * Persistence unit name.
+	//	 */
+	//	@SuppressWarnings("nls")
+	//	private final static String PERSISTENCE_UNIT = "org.geocode.jpa";
 
 	/**
 	 * Google Maps API key.
@@ -42,17 +52,17 @@ public final class GeocodeAddress
 	 * Entity manager factory.
 	 */
 	private EntityManagerFactory factory = null;
-	
+
 	/**
 	 * Entity manager.
 	 */
 	private EntityManager manager = null;
-	
+
 	/**
 	 * Are the entity managers initialized?
 	 */
 	private static boolean INITIALIZED = false;
-	
+
 	/**
 	 * Geocoding results.
 	 */
@@ -61,18 +71,18 @@ public final class GeocodeAddress
 	/**
 	 * Geocoding API context.
 	 */
-	private GeoApiContext context = new GeoApiContext.Builder().apiKey(GOOGLE_API_KEY).build();
+	private GeoApiContext context = null;
 
 	/**
 	 * Fake data generator.
 	 */
 	private 	Faker faker = Faker.instance(Locale.FRENCH);
 
-	
+
 	/**
-	 * Creates a new geocode address.
+	 * Creates a new geocoder.
 	 */
-	public GeocodeAddress()
+	public Geocoder()
 	{
 		if (!INITIALIZED)
 		{
@@ -80,137 +90,139 @@ public final class GeocodeAddress
 		}
 	}
 
+	/**
+	 * Resolves a list of addresses using the Google geocoding API.
+	 * <p>
+	 * @param addresses List of {@link Address} to resolve.
+	 */
+	public final void resolve(@NonNull List<Address> addresses)
+	{
+		for (Address address : addresses)
+		{
+			resolve(address);
+		}
+	}
+
+	/**
+	 * Resolves an address using the Google Geocoding API.
+	 * <p>
+	 * @param address {@link Address} to resolve.
+	 * @return Resolved address.
+	 */
 	@SuppressWarnings("nls")
-	public final void geocode()
+	public final Address resolve(@NonNull Address address)
 	{
 		Gson gson = null;
 		GeocodingResult result = null;
 		AddressType addressType = null;
 		AddressComponent component = null;
 		AddressComponentType type = null;
-		
-		generateFakeAddress(10, Locale.FRENCH);
-		
-		List<Address> addresses = manager.createNamedQuery("Address.findAll").getResultList();
-		for (Address address : addresses)
+
+		try
 		{
-			try
+			results = GeocodingApi.geocode(context, address.getUnformatted()).await();
+			gson = new GsonBuilder().setPrettyPrinting().create();
+
+			if (results.length != 0)
 			{
-				results = GeocodingApi.geocode(context, address.getUnformatted()).await();
-				gson = new GsonBuilder().setPrettyPrinting().create();
-				
-				if (results.length != 0)
+				if (results.length > 1)
 				{
-					if (results.length > 1)
+					System.out.println("More than 1 result for: " + address.getUnformatted());
+				}
+
+				address.setResult(GeocodeResult.FOUND.name());
+
+				for (GeocodingResult result2 : results)
+				{
+					result = result2;
+
+					for (AddressType type2 : result.types)
 					{
-						System.out.println("More than 1 result for: " + address.getUnformatted());
+						address.setType(Arrays.toString(result.types));
 					}
-					
-					address.setResult(GeocodeResult.FOUND.name());
 
-					for (int i = 0; i < results.length; i++)
+					address.setFormatted(results[0].formattedAddress);
+
+					for (AddressComponent addressComponent : result.addressComponents)
 					{
-						result = results[i];
-						
-						for (int l = 0; l < result.types.length; l++)
-						{
-							address.setType(Arrays.toString(result.types));
-						}
-						
-						address.setFormatted(results[0].formattedAddress);
+						component = addressComponent;
 
-						for (int j = 0; j < result.addressComponents.length; j++)
+						for (AddressComponentType type2 : component.types)
 						{
-							component = result.addressComponents[j];
-
-							for (int k = 0; k < component.types.length; k++)
+							type = type2;
+							if (type == AddressComponentType.STREET_NUMBER)
 							{
-								type = component.types[k];
-								if (type == AddressComponentType.STREET_NUMBER)
-								{
-									address.setStreetNumber(component.longName);
-								}
-								else if (type == AddressComponentType.ROUTE)
-								{
-									address.setRoute(component.longName);
-								}
-								else if (type == AddressComponentType.COUNTRY)
-								{
-									address.setFullCountry(component.longName);
-									address.setShortCountry(component.shortName);
-								}
-								else if (type == AddressComponentType.LOCALITY)
-								{
-									address.setLocality(component.longName);
-								}
-								else if (type == AddressComponentType.POSTAL_CODE)
-								{
-									address.setPostalCode(component.longName);
-								}
-								else if (type == AddressComponentType.ADMINISTRATIVE_AREA_LEVEL_1)
-								{
-									address.setFullPolitical(component.longName);
-									address.setShortPolitical(component.shortName);
-								}
-								else if (type == AddressComponentType.ADMINISTRATIVE_AREA_LEVEL_2)
-								{
-									address.setFullRegion(component.longName);
-									address.setShortRegion(component.shortName);
-								}
+								address.setStreetNumber(component.longName);
+							}
+							else if (type == AddressComponentType.ROUTE)
+							{
+								address.setRoute(component.longName);
+							}
+							else if (type == AddressComponentType.COUNTRY)
+							{
+								address.setFullCountry(component.longName);
+								address.setShortCountry(component.shortName);
+							}
+							else if (type == AddressComponentType.LOCALITY)
+							{
+								address.setLocality(component.longName);
+							}
+							else if (type == AddressComponentType.POSTAL_CODE)
+							{
+								address.setPostalCode(component.longName);
+							}
+							else if (type == AddressComponentType.ADMINISTRATIVE_AREA_LEVEL_1)
+							{
+								address.setFullPolitical(component.longName);
+								address.setShortPolitical(component.shortName);
+							}
+							else if (type == AddressComponentType.ADMINISTRATIVE_AREA_LEVEL_2)
+							{
+								address.setFullRegion(component.longName);
+								address.setShortRegion(component.shortName);
 							}
 						}
 					}
 				}
-				else 
-				{
-					address.setResult(GeocodeResult.NOTFOUND.name());
-				}
-				
-				try
-				{
-					if (!manager.getTransaction().isActive())
-					{
-						manager.getTransaction().begin();
-						manager.persist(address);
-						manager.getTransaction().commit();
-					}
-				}
-				catch (Exception e)
-				{
-					manager.getTransaction().rollback();
-					// TODO Log the exception!
-				}		
 			}
-			catch (ApiException e)
+			else
 			{
-				// ApiException and its descendants represent an error returned by the remote API. 
-				// API errors are determined by the status field returned in any of the Geo API responses.
-				e.printStackTrace();
-			}
-			catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				address.setResult(GeocodeResult.NOTFOUND.name());
 			}
 		}
+		catch (ApiException e)
+		{
+			// ApiException and its descendants represent an error returned by the remote API.
+			// API errors are determined by the status field returned in any of the Geo API responses.
+			e.printStackTrace();
+		}
+		catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return address;
 	}
 
 	/**
-	 * Initializes the entity manager & factory. 
+	 * Initializes the entity manager & factory.
 	 */
 	private final void initialize()
 	{
-		factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
-		manager = factory.createEntityManager();
-		
+		//		factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
+		//		manager = factory.createEntityManager();
+
+		context = new GeoApiContext.Builder().apiKey(GOOGLE_API_KEY).build();
+
 		INITIALIZED = true;
 	}
-	
+
 	/**
 	 * Generates some fake addresses in a given locale and inject them in the database.
 	 * <p>
@@ -239,7 +251,7 @@ public final class GeocodeAddress
 							.append(" ")
 							//.append(faker.address().country());
 							.append("France");
-	
+
 					address = new Address(text.toString(), true);
 					address.setLocale("FR");
 
@@ -253,6 +265,6 @@ public final class GeocodeAddress
 		{
 			manager.getTransaction().rollback();
 			// TODO Log the exception!
-		}		
-	}	
+		}
+	}
 }

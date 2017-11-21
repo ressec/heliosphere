@@ -19,6 +19,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
@@ -34,7 +35,11 @@ import lombok.Setter;
  */
 @Entity(name = "address")
 @Table(schema = "public")
-@NamedQuery(name = "Address.findAll", query = "select a from address a")
+@NamedQueries({
+	@NamedQuery(name = "Address.findAll", query = "select a from address a"),
+	@NamedQuery(name = "Address.test.findIBMAddress", query = "select a from address a where a.unformatted = '25 rue eugène marziano 1227 geneva suisse'")
+})
+
 public class Address implements Serializable
 {
 	/**
