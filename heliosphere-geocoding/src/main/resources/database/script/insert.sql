@@ -1,5 +1,7 @@
+/* SWISS real addresses */
+insert into public.address (unformatted, is_fake, locale) values ('25 rue eugène marziano 1227 geneva suisse', false, 'CH');
+
 /* FRENCH real addresses */
-insert into public.address (unformatted, is_fake, locale) values ('25 rue eugène marziano 1227 geneva suisse', false, 'FR');
 insert into public.address (unformatted, is_fake, locale) values ('27 rue du saget 74100 anemasse france', false, 'FR');
 insert into public.address (unformatted, is_fake, locale) values ('48 r Vignette, 59800 Lille', false, 'FR');
 insert into public.address (unformatted, is_fake, locale) values ('31 r Abbé Groult 75015 Paris', false, 'FR');
