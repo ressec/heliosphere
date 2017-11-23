@@ -115,7 +115,7 @@ public class AddressTest
 	@Test
 	public final void testFindAll()
 	{
-		final int COUNT = 88;
+		final int COUNT = 90;
 
 		try
 		{
@@ -135,15 +135,16 @@ public class AddressTest
 	@Test
 	public final void testGeocoder()
 	{
+		String value = "JU";
 		Geocoder geocoder = new Geocoder();
 
 		try
 		{
-			// To get all addresses, use findAll instead.
-			List<Address> addresses = manager.createNamedQuery("Address.test.findIBMAddress").getResultList();
+			// Get all addresses having as locale 'JU' for JUnit tests.
+			List<Address> addresses = manager.createNamedQuery("Address.findByLocale").setParameter("locale", value).getResultList();
 			if (addresses.isEmpty())
 			{
-				fail("Should have returned one address for!");
+				fail("Should have returned at least one address addresses with locale set to: " + value);
 			}
 
 			for (Address address : addresses)
