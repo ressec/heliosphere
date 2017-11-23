@@ -1,7 +1,7 @@
 /*
  * Copyright(c) 2017 - Trias Group Corp.
  * ---------------------------------------------------------------------------
- * This file is part of the eMeal's project which is licensed under the 
+ * This file is part of the eMeal's project which is licensed under the
  * Apache license version 2 and use is subject to license terms.
  * You should have received a copy of the license with the project's artifact
  * binaries and/or sources.
@@ -37,7 +37,7 @@ import lombok.Setter;
 @Table(schema = "public")
 @NamedQueries({
 	@NamedQuery(name = "Address.findAll", query = "select a from address a"),
-	@NamedQuery(name = "Address.test.findIBMAddress", query = "select a from address a where a.unformatted = '25 rue eugène marziano 1227 geneva suisse'")
+	@NamedQuery(name = "Address.findByLocale", query = "select a from address a where a.locale = :locale")
 })
 
 public class Address implements Serializable
@@ -215,7 +215,7 @@ public class Address implements Serializable
 	@Getter
 	@Setter
 	private Time timestamp;
-	
+
 	/**
 	 * Creates a new empty address.
 	 */
