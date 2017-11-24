@@ -1,7 +1,7 @@
 /*
  * Copyright(c) 2016 - Heliosphere Corp.
  * ---------------------------------------------------------------------------
- * This file is part of the Heliosphere's project which is licensed under the 
+ * This file is part of the Heliosphere's project which is licensed under the
  * Apache license version 2 and use is subject to license terms.
  * You should have received a copy of the license with the project's artifact
  * binaries and/or sources.
@@ -70,6 +70,20 @@ public class CommandParameterMetadata
 	private String syntax;
 
 	/**
+	 * Command parameter formatter class name.
+	 */
+	@Getter
+	@Setter
+	private String formatter;
+
+	/**
+	 * Command parameter validator class name.
+	 */
+	@Getter
+	@Setter
+	private String validator;
+
+	/**
 	 * Collection of examples.
 	 */
 	@Getter
@@ -111,7 +125,7 @@ public class CommandParameterMetadata
 		{
 			this.examples = examples;
 		}
-		else 
+		else
 		{
 			this.examples.addAll(examples);
 		}

@@ -1,3 +1,14 @@
+/*
+ * Copyright(c) 2017-2017 Heliosphere Corp.
+ * ---------------------------------------------------------------------------
+ * This file is part of the Heliosphere's project which is licensed under the
+ * Apache license version 2 and use is subject to license terms.
+ * You should have received a copy of the license with the project's artifact
+ * binaries and/or sources.
+ * 
+ * License can be consulted at http://www.apache.org/licenses/LICENSE-2.0
+ * ---------------------------------------------------------------------------
+ */
 package org.heliosphere.common.command;
 
 import java.util.ArrayList;
@@ -11,6 +22,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.NotImplementedException;
+import org.heliosphere.common.command.exception.CommandCategoryException;
 import org.heliosphere.common.command.exception.CommandManagerException;
 import org.heliosphere.common.command.internal.metadata.CommandCategory;
 import org.heliosphere.common.command.internal.metadata.CommandDomain;
@@ -41,7 +53,7 @@ public class CommandManager
 	 */
 	@SuppressWarnings("nls")
 	private final static String DELIMITER = ".";
-	
+
 	/**
 	 * Properties file extension.
 	 */
@@ -115,6 +127,18 @@ public class CommandManager
 	private final static String FIELD_PROCESSOR = "processor";
 
 	/**
+	 * Field: formatter.
+	 */
+	@SuppressWarnings("nls")
+	private final static String FIELD_FORMATTER = "formatter";
+
+	/**
+	 * Field: validator.
+	 */
+	@SuppressWarnings("nls")
+	private final static String FIELD_VALIDATOR = "validator";
+
+	/**
 	 * Field: parameter.
 	 */
 	@SuppressWarnings("nls")
@@ -160,7 +184,7 @@ public class CommandManager
 	 * Properties file.
 	 */
 	private static PropertiesConfiguration properties = null;
-	
+
 	/**
 	 * Command categories.
 	 */
@@ -180,11 +204,21 @@ public class CommandManager
 	 * Commands.
 	 */
 	private static Map<String, CommandMetadata> COMMANDS = new HashMap<>();
-	
+
 	/**
 	 * Internal ordered command structure.
 	 */
 	private static Map<String, Map<String, Map<String, Map<String, CommandMetadata>>>> MAP = new HashMap<>();
+
+	/**
+	 * Returns a list of registered command categories.
+	 * <p>
+	 * @return List of command categories.
+	 */
+	public static final List<CommandCategory> getCategories()
+	{
+		return Collections.unmodifiableList(new ArrayList<>(CATEGORIES.values()));
+	}
 
 	/**
 	 * Returns a list of registered command category names.
@@ -208,13 +242,13 @@ public class CommandManager
 	public static final List<String> getDomainNames(final @NonNull String category)
 	{
 
-		
+
 		Map<String, Map<String, Map<String, CommandMetadata>>> MAP_DOMAINS = MAP.get(category);
 		if (MAP_DOMAINS != null)
 		{
 			return Collections.unmodifiableList((List<String>) MAP_DOMAINS.keySet());
 		}
-		
+
 		return null;
 	}
 
@@ -237,7 +271,7 @@ public class CommandManager
 				return Collections.unmodifiableList((List<String>) MAP_GROUPS.keySet());
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -265,7 +299,7 @@ public class CommandManager
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -289,11 +323,11 @@ public class CommandManager
 				Map<String, CommandMetadata> MAP_COMMANDS = MAP_GROUPS.get(group);
 				if (MAP_COMMANDS != null)
 				{
-					return Collections.unmodifiableList(new ArrayList<CommandMetadata>(MAP_COMMANDS.values()));
+					return Collections.unmodifiableList(new ArrayList<>(MAP_COMMANDS.values()));
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -306,7 +340,7 @@ public class CommandManager
 	{
 		return COMMANDS.size();
 	}
-	
+
 	/**
 	 * Registers the command definitions declared in the given file.
 	 * <p>
@@ -319,25 +353,25 @@ public class CommandManager
 		try
 		{
 			Resource file = new Resource(filename);
-			String extension = FilenameUtils.getExtension(file.getFile().getName()); 
-			
+			String extension = FilenameUtils.getExtension(file.getFile().getName());
+
 			if (extension.equalsIgnoreCase(FILE_PROPERTIES))
 			{
 				registerFromProperties(file);
 			}
-			else 
+			else
 			{
 				if (extension.equalsIgnoreCase(FILE_XML))
 				{
 					registerFromXML(file);
 				}
-				else 
+				else
 				{
 					if (extension.equalsIgnoreCase(FILE_JSON))
 					{
 						registerFromJSON(file);
 					}
-					else 
+					else
 					{
 						throw new CommandManagerException("Only properties, XML or JSON files are accepted!");
 					}
@@ -349,7 +383,7 @@ public class CommandManager
 			throw new CommandManagerException(e);
 		}
 	}
-	
+
 	/**
 	 * Registers the command definitions declared in the given properties file.
 	 * <p>
@@ -361,7 +395,7 @@ public class CommandManager
 		{
 			properties = new PropertiesConfiguration(file.getFile().getAbsolutePath());
 			properties.load();
-			
+
 			try
 			{
 				// Load the declared command categories.
@@ -375,13 +409,18 @@ public class CommandManager
 
 				// Load the declared commands.
 				loadCommands();
-				
+
 				// For all registered commands, load their parameters.
 				loadCommandParameters();
-				
+
 				buildCommandTree();
 			}
 			catch (CommandManagerException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (CommandCategoryException e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -417,20 +456,20 @@ public class CommandManager
 	/**
 	 * Load the command categories.
 	 * <p>
-	 * @throws CommandManagerException Thrown in case an error occurred with a command category definition.
+	 * @throws CommandCategoryException Thrown in case an error occurred with a command category definition.
 	 */
 	@SuppressWarnings("nls")
-	private static final void loadCategories() throws CommandManagerException
+	private static final void loadCategories() throws CommandCategoryException
 	{
 		CommandCategory category = null;
 		String values[] = null;
 		String tag = null;
-		
+
 		List<String> elements = Lists.newArrayList(properties.getKeys(COMMAND_CATEGORY_PREFIX));
 		for (String element : elements)
 		{
 			values = element.split(Pattern.quote(DELIMITER));
-			
+
 			if (tag == null || !tag.equalsIgnoreCase(values[2]))
 			{
 				if (values[3].equalsIgnoreCase(FIELD_NAME))
@@ -440,40 +479,61 @@ public class CommandManager
 					if (!CATEGORIES.containsKey(tag))
 					{
 						category = new CommandCategory(tag);
+						category = loadCategoryAttributes(category);
+						category.checkValidity();
 						CATEGORIES.put(tag, category);
 					}
 				}
 			}
-			else 
+			else
 			{
-				if (category == null)
-				{
-					throw new CommandManagerException(String.format("Category definition must begin with the 'name' entry for: %1s", element));
-				}
-				
-				if (values[2].equalsIgnoreCase(tag))
-				{
-					if (values[3].equalsIgnoreCase(FIELD_DESCRIPTION))
-					{
-						category.setDescription(properties.getString(element));
-					}
-					else if (values[3].equalsIgnoreCase(FIELD_PREFIX))
-					{
-						category.setPrefix(properties.getString(element));
-					}
-					else 
-					{
-						throw new CommandManagerException(String.format("Invalid command category definition for: %1s", element));
-					}
-				}
+				int i = 0;
 			}
 		}
-		
+
 		// Summarize the loaded categories.
 		for (CommandCategory e : CATEGORIES.values())
 		{
 			log.info(String.format("Command category: %1s registered", e.toString()));
 		}
+	}
+
+	/**
+	 * Loads the attributes of a command category.
+	 * <p>
+	 * @param category Command category.
+	 * @return {@link CommandCategory} with loaded attributes.
+	 * @throws CommandCategoryException Thrown in case an error occurred with a command category definition.
+	 */
+	@SuppressWarnings("nls")
+	private static final CommandCategory loadCategoryAttributes(@NonNull CommandCategory category) throws CommandCategoryException
+	{
+		String values[] = null;
+
+		List<String> attributes = Lists.newArrayList(properties.getKeys(COMMAND_CATEGORY_PREFIX + "." + category.getName()));
+
+		for (String attribute : attributes)
+		{
+			values = attribute.split(Pattern.quote(DELIMITER));
+			if (values[3].equalsIgnoreCase(FIELD_NAME))
+			{
+				// Do nothing, we already have the category name.
+			}
+			else if (values[3].equalsIgnoreCase(FIELD_PREFIX))
+			{
+				category.setPrefix(properties.getString(attribute));
+			}
+			else if (values[3].equalsIgnoreCase(FIELD_DESCRIPTION))
+			{
+				category.setDescription(properties.getString(attribute));
+			}
+			else
+			{
+				throw new CommandCategoryException(String.format("Invalid command category definition for: %1s", attribute));
+			}
+		}
+
+		return category;
 	}
 
 	/**
@@ -487,12 +547,12 @@ public class CommandManager
 		CommandDomain domain = null;
 		String values[] = null;
 		String tag = null;
-		
+
 		List<String> elements = Lists.newArrayList(properties.getKeys(COMMAND_DOMAIN_PREFIX));
 		for (String element : elements)
 		{
 			values = element.split(Pattern.quote(DELIMITER));
-			
+
 			if (tag == null || !tag.equalsIgnoreCase(values[2]))
 			{
 				if (values[3].equalsIgnoreCase(FIELD_NAME))
@@ -506,20 +566,20 @@ public class CommandManager
 					}
 				}
 			}
-			else 
+			else
 			{
 				if (domain == null)
 				{
 					throw new CommandManagerException(String.format("Domain definition must begin with the 'name' entry for: %1s", element));
 				}
-				
+
 				if (values[2].equalsIgnoreCase(tag))
 				{
 					if (values[3].equalsIgnoreCase(FIELD_DESCRIPTION))
 					{
 						domain.setDescription(properties.getString(element));
 					}
-					else 
+					else
 					{
 						throw new CommandManagerException(String.format("Invalid command domain definition for: %1s", element));
 					}
@@ -545,12 +605,12 @@ public class CommandManager
 		CommandGroup group = null;
 		String values[] = null;
 		String tag = null;
-		
+
 		List<String> elements = Lists.newArrayList(properties.getKeys(COMMAND_GROUP_PREFIX));
 		for (String element : elements)
 		{
 			values = element.split(Pattern.quote(DELIMITER));
-			
+
 			if (tag == null || !tag.equalsIgnoreCase(values[3]))
 			{
 				if (values[3].equalsIgnoreCase(FIELD_NAME))
@@ -564,20 +624,20 @@ public class CommandManager
 					}
 				}
 			}
-			else 
+			else
 			{
 				if (group == null)
 				{
 					throw new CommandManagerException(String.format("Domain definition must begin with the 'name' entry for: %1s", element));
 				}
-				
+
 				if (values[2].equalsIgnoreCase(tag))
 				{
 					if (values[3].equalsIgnoreCase(FIELD_DESCRIPTION))
 					{
 						group.setDescription(properties.getString(element));
 					}
-					else 
+					else
 					{
 						throw new CommandManagerException(String.format("Invalid command domain definition for: %1s", element));
 					}
@@ -600,13 +660,13 @@ public class CommandManager
 	@SuppressWarnings("nls")
 	private static final void loadCommands() throws CommandManagerException
 	{
-		CommandMetadata command = null;	
+		CommandMetadata command = null;
 		String values[] = null;
 		String category = null;
 		String domain = null;
 		String group = null;
 		String tag = null;
-		
+
 		List<String> elements = Lists.newArrayList(properties.getKeys(COMMAND_PREFIX));
 		for (String element : elements)
 		{
@@ -641,7 +701,7 @@ public class CommandManager
 					throw new CommandManagerException(String.format("Invalid entry for: %1s because the command group: %2s cannot be found!", element, group));
 				}
 			}
-			
+
 			if (tag == null || !tag.equalsIgnoreCase(values[5]))
 			{
 				// Check if the command name entry is present?
@@ -656,7 +716,7 @@ public class CommandManager
 					}
 				}
 			}
-			else 
+			else
 			{
 				if (command == null)
 				{
@@ -683,6 +743,11 @@ public class CommandManager
 				{
 					command.setProcessor(properties.getString(element));
 				}
+				// Check if the command validator entry is present?
+				else if (values[6].equalsIgnoreCase(FIELD_VALIDATOR) && values[5].equalsIgnoreCase(tag))
+				{
+					command.setValidator(properties.getString(element));
+				}
 				// Check if the command example entry is present?
 				else if (values[6].equalsIgnoreCase(FIELD_EXAMPLE) && values[5].equalsIgnoreCase(tag))
 				{
@@ -691,9 +756,9 @@ public class CommandManager
 				// Check if the command parameter entry is present?
 				else if (values[6].equalsIgnoreCase(FIELD_PARAMETER) && values[5].equalsIgnoreCase(tag))
 				{
-					// Do not process those lines at this time! 
+					// Do not process those lines at this time!
 				}
-				else 
+				else
 				{
 					throw new CommandManagerException(String.format("Invalid entry for: %1s!", element));
 				}
@@ -706,7 +771,7 @@ public class CommandManager
 			log.info(String.format("Command: %1s registered", e.toString()));
 		}
 	}
-	
+
 	/**
 	 * Load the command parameters.
 	 * <p>
@@ -720,13 +785,13 @@ public class CommandManager
 		StringBuilder filter = null;
 		String elements[] = null;
 		String tag = null;
-		
+
 		List<CommandMetadata> commands = new ArrayList<>(COMMANDS.values());
-		
+
 		for (CommandMetadata command : commands)
 		{
 			tag = null;
-			
+
 			filter = new StringBuilder(COMMAND_PREFIX)
 					.append(".")
 					.append(command.getCategory())
@@ -737,9 +802,9 @@ public class CommandManager
 					.append(".")
 					.append(command.getName())
 					.append(".parameter");
-			
+
 			values = Lists.newArrayList(properties.getKeys(filter.toString()));
-			
+
 			for (String entry : values)
 			{
 				elements = entry.split(Pattern.quote(DELIMITER));
@@ -749,18 +814,18 @@ public class CommandManager
 					if (elements[8].equalsIgnoreCase(FIELD_NAME))
 					{
 						tag = elements[7];
-						
+
 						parameter = new CommandParameterMetadata(properties.getString(entry));
 						command.addParameter(tag, parameter);
 					}
 				}
-				else 
+				else
 				{
 					if (parameter == null)
 					{
 						throw new CommandManagerException(String.format("Parameter definition must begin with the 'name' entry for: %1s", entry));
 					}
-					
+
 					if (elements[8].equalsIgnoreCase(FIELD_DESCRIPTION))
 					{
 						parameter.setDescription(properties.getString(entry));
@@ -785,7 +850,15 @@ public class CommandManager
 					{
 						parameter.addExample(properties.getString(entry));
 					}
-					else 
+					else if (elements[8].equalsIgnoreCase(FIELD_FORMATTER))
+					{
+						parameter.setFormatter(properties.getString(entry));
+					}
+					else if (elements[8].equalsIgnoreCase(FIELD_VALIDATOR))
+					{
+						parameter.setValidator(properties.getString(entry));
+					}
+					else
 					{
 						throw new CommandManagerException(String.format("Invalid command parameter property for: %1s!", entry));
 					}
@@ -793,7 +866,7 @@ public class CommandManager
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("nls")
 	private final static void buildCommandTree() throws CommandManagerException
 	{
@@ -804,13 +877,13 @@ public class CommandManager
 		Map<String, Map<String, Map<String, CommandMetadata>>> MAP_DOMAINS = null;
 		Map<String, Map<String, CommandMetadata>> MAP_GROUPS = null;
 		Map<String, CommandMetadata> MAP_COMMANDS = null;
-		
+
 		for (CommandMetadata command : new ArrayList<>(COMMANDS.values()))
 		{
 			c = CATEGORIES.get(command.getCategory());
 			d = DOMAINS.get(command.getDomain());
 			g = GROUPS.get(command.getGroup());
-			
+
 			if (c == null)
 			{
 				throw new CommandManagerException(String.format("Unknown command category for: %1s", c));
@@ -848,94 +921,94 @@ public class CommandManager
 			MAP.put(c.getName(), MAP_DOMAINS);
 		}
 	}
-	
-//	/**
-//	 * Returns a list of commands being part of a given command category.
-//	 * <p>
-//	 * @param category Category name.
-//	 * @return List of found commands.
-//	 */
-//	public final static List<CommandMetadata> getCommands(final @NonNull String category)
-//	{
-//		List<CommandMetadata> commands = new ArrayList<>();
-//		CommandCategory c = null;
-//		
-//		for (CommandMetadata command : new ArrayList<>(COMMANDS.values()))
-//		{
-//			c = CATEGORIES.get(command.getCategory());
-//			
-//			if (c != null)
-//			{
-//				if (c.getName().equalsIgnoreCase(category))
-//				{
-//					commands.add(command);
-//				}
-//			}
-//		}
-//		
-//		return Collections.unmodifiableList(commands);
-//	}
 
-//	/**
-//	 * Returns a list of commands being part of a given category and domain.
-//	 * <p>
-//	 * @param category Category name.
-//	 * @param domain Domain name.
-//	 * @return List of found commands.
-//	 */
-//	public final static List<CommandMetadata> getCommands(final @NonNull String category, final @NonNull String domain)
-//	{
-//		List<CommandMetadata> commands = new ArrayList<>();
-//		CommandCategory c = null;
-//		CommandDomain d = null;
-//		
-//		for (CommandMetadata command : new ArrayList<>(COMMANDS.values()))
-//		{
-//			c = CATEGORIES.get(command.getCategory());
-//			d = DOMAINS.get(command.getCategory());
-//			
-//			if (c != null && d != null)
-//			{
-//				if (c.getName().equalsIgnoreCase(category) && d.getName().equalsIgnoreCase(domain))
-//				{
-//					commands.add(command);
-//				}
-//			}
-//		}
-//		
-//		return Collections.unmodifiableList(commands);
-//	}
+	//	/**
+	//	 * Returns a list of commands being part of a given command category.
+	//	 * <p>
+	//	 * @param category Category name.
+	//	 * @return List of found commands.
+	//	 */
+	//	public final static List<CommandMetadata> getCommands(final @NonNull String category)
+	//	{
+	//		List<CommandMetadata> commands = new ArrayList<>();
+	//		CommandCategory c = null;
+	//
+	//		for (CommandMetadata command : new ArrayList<>(COMMANDS.values()))
+	//		{
+	//			c = CATEGORIES.get(command.getCategory());
+	//
+	//			if (c != null)
+	//			{
+	//				if (c.getName().equalsIgnoreCase(category))
+	//				{
+	//					commands.add(command);
+	//				}
+	//			}
+	//		}
+	//
+	//		return Collections.unmodifiableList(commands);
+	//	}
 
-//	/**
-//	 * Returns a list of commands being part of a given category, domain and group.
-//	 * <p>
-//	 * @param category Category name.
-//	 * @param domain Domain name.
-//	 * @param group Group name.
-//	 * @return List of found commands.
-//	 */
-//	public final static List<CommandMetadata> getCommands(final @NonNull String category, final @NonNull String domain, final @NonNull String group)
-//	{
-//		List<CommandMetadata> commands = new ArrayList<>();
-//		CommandCategory c = null;
-//		CommandDomain d = null;
-//		CommandGroup g = null;
-//		
-//		for (CommandMetadata command : new ArrayList<>(COMMANDS.values()))
-//		{
-//			c = CATEGORIES.get(command.getCategory());
-//			d = DOMAINS.get(command.getCategory());
-//			g = GROUPS.get(command.getCategory());
-//			
-//			if (c != null && d != null && g != null)
-//			{
-//				if (c.getName().equalsIgnoreCase(category) && d.getName().equalsIgnoreCase(domain) && g.getName().equalsIgnoreCase(group))
-//				{
-//					commands.add(command);
-//				}
-//			}
-//		}
-//		
-//		return Collections.unmodifiableList(commands);
-//	}
+	//	/**
+	//	 * Returns a list of commands being part of a given category and domain.
+	//	 * <p>
+	//	 * @param category Category name.
+	//	 * @param domain Domain name.
+	//	 * @return List of found commands.
+	//	 */
+	//	public final static List<CommandMetadata> getCommands(final @NonNull String category, final @NonNull String domain)
+	//	{
+	//		List<CommandMetadata> commands = new ArrayList<>();
+	//		CommandCategory c = null;
+	//		CommandDomain d = null;
+	//
+	//		for (CommandMetadata command : new ArrayList<>(COMMANDS.values()))
+	//		{
+	//			c = CATEGORIES.get(command.getCategory());
+	//			d = DOMAINS.get(command.getCategory());
+	//
+	//			if (c != null && d != null)
+	//			{
+	//				if (c.getName().equalsIgnoreCase(category) && d.getName().equalsIgnoreCase(domain))
+	//				{
+	//					commands.add(command);
+	//				}
+	//			}
+	//		}
+	//
+	//		return Collections.unmodifiableList(commands);
+	//	}
+
+	//	/**
+	//	 * Returns a list of commands being part of a given category, domain and group.
+	//	 * <p>
+	//	 * @param category Category name.
+	//	 * @param domain Domain name.
+	//	 * @param group Group name.
+	//	 * @return List of found commands.
+	//	 */
+	//	public final static List<CommandMetadata> getCommands(final @NonNull String category, final @NonNull String domain, final @NonNull String group)
+	//	{
+	//		List<CommandMetadata> commands = new ArrayList<>();
+	//		CommandCategory c = null;
+	//		CommandDomain d = null;
+	//		CommandGroup g = null;
+	//
+	//		for (CommandMetadata command : new ArrayList<>(COMMANDS.values()))
+	//		{
+	//			c = CATEGORIES.get(command.getCategory());
+	//			d = DOMAINS.get(command.getCategory());
+	//			g = GROUPS.get(command.getCategory());
+	//
+	//			if (c != null && d != null && g != null)
+	//			{
+	//				if (c.getName().equalsIgnoreCase(category) && d.getName().equalsIgnoreCase(domain) && g.getName().equalsIgnoreCase(group))
+	//				{
+	//					commands.add(command);
+	//				}
+	//			}
+	//		}
+	//
+	//		return Collections.unmodifiableList(commands);
+	//	}
 }

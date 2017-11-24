@@ -13,13 +13,17 @@ package org.heliosphere.common.test.command;
 
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import org.heliosphere.common.command.CommandManager;
 import org.heliosphere.common.command.exception.CommandManagerException;
+import org.heliosphere.common.command.internal.metadata.CommandCategory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -80,26 +84,89 @@ public final class CommandDefinitionTest
 	 */
 	@SuppressWarnings({ "static-method", "boxing" })
 	@Test
-	public final void registerCommandUsingPropertiesFile()
+	public final void testRegisterFromPropertiesFile()
 	{
 		/**
 		 * Expected number of registered command definitions.
 		 */
 		final int EXPECTED_COUNT = 3;
-		
+
 		try
 		{
 			CommandManager.registerFromFile("./command/definition/command-system.properties");
 
 			int count = CommandManager.getCommandCount();
 			Assert.assertTrue(
-					String.format("Expected number of registered commands is %1d but returned number is %2d", EXPECTED_COUNT, count), 
+					String.format("Expected number of registered commands is %1d but returned number is %2d", EXPECTED_COUNT, count),
 					CommandManager.getCommandCount() == EXPECTED_COUNT);
 		}
 		catch (CommandManagerException e)
 		{
 			fail(e.getLocalizedMessage());
 		}
+	}
+
+	/**
+	 * Test the registration of the command categories.
+	 */
+	@SuppressWarnings("static-method")
+	@Test
+	public final void testCommandCategorie()
+	{
+		try
+		{
+			CommandManager.registerFromFile("./command/definition/command-system.properties");
+			List<CommandCategory> commands = CommandManager.getCategories();
+			int count = CommandManager.getCommandCount();
+		}
+		catch (CommandManagerException e)
+		{
+			fail(e.getLocalizedMessage());
+		}
+	}
+
+	/**
+	 * Test the registration of the command domains.
+	 */
+	@SuppressWarnings("static-method")
+	@Test
+	@Ignore
+	public final void testCommandDomain()
+	{
+		fail("Not implemented!");
+	}
+
+	/**
+	 * Test the registration of the command groups.
+	 */
+	@SuppressWarnings("static-method")
+	@Test
+	@Ignore
+	public final void testCommandGroup()
+	{
+		fail("Not implemented!");
+	}
+
+	/**
+	 * Test the registration of the commands.
+	 */
+	@SuppressWarnings("static-method")
+	@Test
+	@Ignore
+	public final void testCommand()
+	{
+		fail("Not implemented!");
+	}
+
+	/**
+	 * Test the registration of the command parameters.
+	 */
+	@SuppressWarnings("static-method")
+	@Test
+	@Ignore
+	public final void testCommandParameter()
+	{
+		fail("Not implemented!");
 	}
 
 	/**

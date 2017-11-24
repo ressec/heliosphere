@@ -1,7 +1,7 @@
 /*
  * Copyright(c) 2016 - Heliosphere Corp.
  * ---------------------------------------------------------------------------
- * This file is part of the Heliosphere's project which is licensed under the 
+ * This file is part of the Heliosphere's project which is licensed under the
  * Apache license version 2 and use is subject to license terms.
  * You should have received a copy of the license with the project's artifact
  * binaries and/or sources.
@@ -57,6 +57,13 @@ public class CommandMetadata
 	@Getter
 	@Setter
 	private String processor;
+
+	/**
+	 * Command validator class name.
+	 */
+	@Getter
+	@Setter
+	private String validator;
 
 	/**
 	 * Command name.
@@ -138,7 +145,7 @@ public class CommandMetadata
 		{
 			aliases = new ArrayList<>();
 		}
-		
+
 		if (!aliases.contains(alias))
 		{
 			aliases.add(alias);
