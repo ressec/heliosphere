@@ -22,7 +22,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.NotImplementedException;
-import org.heliosphere.common.command.exception.CommandCategoryException;
+import org.heliosphere.common.command.exception.CommandException;
 import org.heliosphere.common.command.exception.CommandManagerException;
 import org.heliosphere.common.command.internal.metadata.CommandCategory;
 import org.heliosphere.common.command.internal.metadata.CommandDomain;
@@ -420,7 +420,7 @@ public class CommandManager
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			catch (CommandCategoryException e)
+			catch (CommandException e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -456,10 +456,10 @@ public class CommandManager
 	/**
 	 * Load the command categories.
 	 * <p>
-	 * @throws CommandCategoryException Thrown in case an error occurred with a command category definition.
+	 * @throws CommandException Thrown in case an error occurred with a command category definition.
 	 */
 	@SuppressWarnings("nls")
-	private static final void loadCategories() throws CommandCategoryException
+	private static final void loadCategories() throws CommandException
 	{
 		CommandCategory category = null;
 		String values[] = null;
@@ -480,14 +480,10 @@ public class CommandManager
 					{
 						category = new CommandCategory(tag);
 						category = loadCategoryAttributes(category);
-						category.checkValidity();
+						category.validate();
 						CATEGORIES.put(tag, category);
 					}
 				}
-			}
-			else
-			{
-				int i = 0;
 			}
 		}
 
@@ -503,10 +499,10 @@ public class CommandManager
 	 * <p>
 	 * @param category Command category.
 	 * @return {@link CommandCategory} with loaded attributes.
-	 * @throws CommandCategoryException Thrown in case an error occurred with a command category definition.
+	 * @throws CommandException Thrown in case an error occurred with a command category definition.
 	 */
 	@SuppressWarnings("nls")
-	private static final CommandCategory loadCategoryAttributes(@NonNull CommandCategory category) throws CommandCategoryException
+	private static final CommandCategory loadCategoryAttributes(@NonNull CommandCategory category) throws CommandException
 	{
 		String values[] = null;
 
@@ -529,7 +525,7 @@ public class CommandManager
 			}
 			else
 			{
-				throw new CommandCategoryException(String.format("Invalid command category definition for: %1s", attribute));
+				throw new CommandException(String.format("Invalid command category definition for: %1s", attribute));
 			}
 		}
 
@@ -539,10 +535,10 @@ public class CommandManager
 	/**
 	 * Load the command domains.
 	 * <p>
-	 * @throws CommandManagerException Thrown in case an error occurred with a command domain definition.
+	 * @throws CommandException Thrown in case an error occurred with a command domain definition.
 	 */
 	@SuppressWarnings("nls")
-	private static final void loadDomains() throws CommandManagerException
+	private static final void loadDomains() throws CommandException
 	{
 		CommandDomain domain = null;
 		String values[] = null;
@@ -562,26 +558,8 @@ public class CommandManager
 					if (!DOMAINS.containsKey(tag))
 					{
 						domain = new CommandDomain(tag);
+						domain = loadDomainAttributes(domain);
 						DOMAINS.put(tag, domain);
-					}
-				}
-			}
-			else
-			{
-				if (domain == null)
-				{
-					throw new CommandManagerException(String.format("Domain definition must begin with the 'name' entry for: %1s", element));
-				}
-
-				if (values[2].equalsIgnoreCase(tag))
-				{
-					if (values[3].equalsIgnoreCase(FIELD_DESCRIPTION))
-					{
-						domain.setDescription(properties.getString(element));
-					}
-					else
-					{
-						throw new CommandManagerException(String.format("Invalid command domain definition for: %1s", element));
 					}
 				}
 			}
@@ -595,12 +573,47 @@ public class CommandManager
 	}
 
 	/**
-	 * Load the command groups.
+	 * Loads the attributes of a command domain.
 	 * <p>
-	 * @throws CommandManagerException Thrown in case an error occurred with a command group definition.
+	 * @param domain Command domain.
+	 * @return {@link CommandDomain} with loaded attributes.
+	 * @throws CommandException Thrown in case an error occurred with a command domain definition.
 	 */
 	@SuppressWarnings("nls")
-	private static final void loadGroups() throws CommandManagerException
+	private static final CommandDomain loadDomainAttributes(@NonNull CommandDomain domain) throws CommandException
+	{
+		String values[] = null;
+
+		List<String> attributes = Lists.newArrayList(properties.getKeys(COMMAND_DOMAIN_PREFIX + "." + domain.getName()));
+
+		for (String attribute : attributes)
+		{
+			values = attribute.split(Pattern.quote(DELIMITER));
+			if (values[3].equalsIgnoreCase(FIELD_NAME))
+			{
+				// Do nothing, we already have the category name.
+			}
+			else if (values[3].equalsIgnoreCase(FIELD_DESCRIPTION))
+			{
+				domain.setDescription(properties.getString(attribute));
+			}
+			else
+			{
+				throw new CommandException(String.format("Invalid command domain definition for: %1s", attribute));
+			}
+		}
+
+
+		return domain;
+	}
+
+	/**
+	 * Load the command groups.
+	 * <p>
+	 * @throws CommandException Thrown in case an error occurred with a command group definition.
+	 */
+	@SuppressWarnings("nls")
+	private static final void loadGroups() throws CommandException
 	{
 		CommandGroup group = null;
 		String values[] = null;
@@ -620,26 +633,8 @@ public class CommandManager
 					if (!GROUPS.containsKey(tag))
 					{
 						group = new CommandGroup(tag);
+						group = loadGroupAttributes(group);
 						GROUPS.put(tag, group);
-					}
-				}
-			}
-			else
-			{
-				if (group == null)
-				{
-					throw new CommandManagerException(String.format("Domain definition must begin with the 'name' entry for: %1s", element));
-				}
-
-				if (values[2].equalsIgnoreCase(tag))
-				{
-					if (values[3].equalsIgnoreCase(FIELD_DESCRIPTION))
-					{
-						group.setDescription(properties.getString(element));
-					}
-					else
-					{
-						throw new CommandManagerException(String.format("Invalid command domain definition for: %1s", element));
 					}
 				}
 			}
@@ -653,12 +648,47 @@ public class CommandManager
 	}
 
 	/**
-	 * LOad the commands.
+	 * Loads the attributes of a command group.
 	 * <p>
-	 * @throws CommandManagerException Thrown in case an error occurred with a command definition.
+	 * @param group Command group.
+	 * @return {@link CommandGroup} with loaded attributes.
+	 * @throws CommandException Thrown in case an error occurred with a command group definition.
 	 */
 	@SuppressWarnings("nls")
-	private static final void loadCommands() throws CommandManagerException
+	private static final CommandGroup loadGroupAttributes(@NonNull CommandGroup group) throws CommandException
+	{
+		String values[] = null;
+
+		List<String> attributes = Lists.newArrayList(properties.getKeys(COMMAND_GROUP_PREFIX + "." + group.getName()));
+
+		for (String attribute : attributes)
+		{
+			values = attribute.split(Pattern.quote(DELIMITER));
+			if (values[3].equalsIgnoreCase(FIELD_NAME))
+			{
+				// Do nothing, we already have the category name.
+			}
+			else if (values[3].equalsIgnoreCase(FIELD_DESCRIPTION))
+			{
+				group.setDescription(properties.getString(attribute));
+			}
+			else
+			{
+				throw new CommandException(String.format("Invalid command group definition for: %1s", attribute));
+			}
+		}
+
+
+		return group;
+	}
+
+	/**
+	 * Loads the commands.
+	 * <p>
+	 * @throws CommandException Thrown in case an error occurred with a command definition.
+	 */
+	@SuppressWarnings("nls")
+	private static final void loadCommands() throws CommandException
 	{
 		CommandMetadata command = null;
 		String values[] = null;
@@ -678,7 +708,7 @@ public class CommandManager
 				category = values[2];
 				if (!CATEGORIES.containsKey(category))
 				{
-					throw new CommandManagerException(String.format("Invalid entry for: %1s because the command category: %2s cannot be found!", element, category));
+					throw new CommandException(String.format("Invalid entry for: %1s because the command category: %2s cannot be found!", element, category));
 				}
 			}
 
@@ -688,7 +718,7 @@ public class CommandManager
 				domain = values[3];
 				if (!DOMAINS.containsKey(domain))
 				{
-					throw new CommandManagerException(String.format("Invalid entry for: %1s because the command domain: %2s cannot be found!", element, domain));
+					throw new CommandException(String.format("Invalid entry for: %1s because the command domain: %2s cannot be found!", element, domain));
 				}
 			}
 
@@ -698,7 +728,7 @@ public class CommandManager
 				group = values[4];
 				if (!GROUPS.containsKey(group))
 				{
-					throw new CommandManagerException(String.format("Invalid entry for: %1s because the command group: %2s cannot be found!", element, group));
+					throw new CommandException(String.format("Invalid entry for: %1s because the command group: %2s cannot be found!", element, group));
 				}
 			}
 
@@ -712,55 +742,10 @@ public class CommandManager
 					if (!COMMANDS.containsKey(tag))
 					{
 						command = new CommandMetadata(category, domain, group, tag);
+						command = loadCommandAttributes(command);
+						command.validate();
 						COMMANDS.put(tag, command);
 					}
-				}
-			}
-			else
-			{
-				if (command == null)
-				{
-					throw new CommandManagerException(String.format("Command definition must begin with the 'name' entry for: %1s", element));
-				}
-
-				// Check if the command description entry is present?
-				if (values[6].equalsIgnoreCase(FIELD_DESCRIPTION) && values[5].equalsIgnoreCase(tag))
-				{
-					command.setDescription(properties.getString(element));
-				}
-				// Check if the command format entry is present?
-				else if (values[6].equalsIgnoreCase(FIELD_FORMAT) && values[5].equalsIgnoreCase(tag))
-				{
-					command.setFormat(properties.getString(element));
-				}
-				// Check if the command alias entry is present?
-				else if (values[6].equalsIgnoreCase(FIELD_ALIAS) && values[5].equalsIgnoreCase(tag))
-				{
-					command.addAlias(properties.getString(element));
-				}
-				// Check if the command processor entry is present?
-				else if (values[6].equalsIgnoreCase(FIELD_PROCESSOR) && values[5].equalsIgnoreCase(tag))
-				{
-					command.setProcessor(properties.getString(element));
-				}
-				// Check if the command validator entry is present?
-				else if (values[6].equalsIgnoreCase(FIELD_VALIDATOR) && values[5].equalsIgnoreCase(tag))
-				{
-					command.setValidator(properties.getString(element));
-				}
-				// Check if the command example entry is present?
-				else if (values[6].equalsIgnoreCase(FIELD_EXAMPLE) && values[5].equalsIgnoreCase(tag))
-				{
-					command.addExample(properties.getString(element));
-				}
-				// Check if the command parameter entry is present?
-				else if (values[6].equalsIgnoreCase(FIELD_PARAMETER) && values[5].equalsIgnoreCase(tag))
-				{
-					// Do not process those lines at this time!
-				}
-				else
-				{
-					throw new CommandManagerException(String.format("Invalid entry for: %1s!", element));
 				}
 			}
 		}
@@ -773,12 +758,80 @@ public class CommandManager
 	}
 
 	/**
-	 * Load the command parameters.
+	 * Loads the attributes of a command.
 	 * <p>
-	 * @throws CommandManagerException Thrown in case an error occurred while loading a parameter definition.
+	 * @param command Command.
+	 * @return {@link CommandMetadata} with loaded attributes.
+	 * @throws CommandException Thrown in case an error occurred with a command definition.
 	 */
 	@SuppressWarnings("nls")
-	private final static void loadCommandParameters() throws CommandManagerException
+	private static final CommandMetadata loadCommandAttributes(@NonNull CommandMetadata command) throws CommandException
+	{
+		String values[] = null;
+
+		List<String> attributes = Lists.newArrayList(properties.getKeys(COMMAND_PREFIX + "." + command.getName()));
+
+		for (String attribute : attributes)
+		{
+			values = attribute.split(Pattern.quote(DELIMITER));
+
+			// Check if the command name entry is present?
+			if (values[6].equalsIgnoreCase(FIELD_NAME))
+			{
+				// Command name is already known!
+			}
+			// Check if the command description entry is present?
+			else if (values[6].equalsIgnoreCase(FIELD_DESCRIPTION))
+			{
+				command.setDescription(properties.getString(attribute));
+			}
+			// Check if the command format entry is present?
+			else if (values[6].equalsIgnoreCase(FIELD_FORMAT))
+			{
+				command.setFormat(properties.getString(attribute));
+			}
+			// Check if the command alias entry is present?
+			else if (values[6].equalsIgnoreCase(FIELD_ALIAS))
+			{
+				command.addAlias(properties.getString(attribute));
+			}
+			// Check if the command processor entry is present?
+			else if (values[6].equalsIgnoreCase(FIELD_PROCESSOR))
+			{
+				command.setProcessor(properties.getString(attribute));
+			}
+			// Check if the command validator entry is present?
+			else if (values[6].equalsIgnoreCase(FIELD_VALIDATOR))
+			{
+				command.setValidator(properties.getString(attribute));
+			}
+			// Check if the command example entry is present?
+			else if (values[6].equalsIgnoreCase(FIELD_EXAMPLE))
+			{
+				command.addExample(properties.getString(attribute));
+			}
+			// Check if the command parameter entry is present?
+			else if (values[6].equalsIgnoreCase(FIELD_PARAMETER))
+			{
+				// Do not process those lines at this time!
+			}
+			else
+			{
+				throw new CommandException(String.format("Invalid command entry for: %1s", attribute));
+			}
+		}
+
+
+		return command;
+	}
+
+	/**
+	 * Load the command parameters.
+	 * <p>
+	 * @throws CommandException Thrown in case an error occurred while loading a parameter definition.
+	 */
+	@SuppressWarnings("nls")
+	private final static void loadCommandParameters() throws CommandException
 	{
 		CommandParameterMetadata parameter = null;
 		List<String> values = null;
@@ -823,7 +876,7 @@ public class CommandManager
 				{
 					if (parameter == null)
 					{
-						throw new CommandManagerException(String.format("Parameter definition must begin with the 'name' entry for: %1s", entry));
+						throw new CommandException(String.format("Parameter definition must begin with the 'name' entry for: %1s", entry));
 					}
 
 					if (elements[8].equalsIgnoreCase(FIELD_DESCRIPTION))
@@ -860,13 +913,18 @@ public class CommandManager
 					}
 					else
 					{
-						throw new CommandManagerException(String.format("Invalid command parameter property for: %1s!", entry));
+						throw new CommandException(String.format("Invalid command parameter property for: %1s!", entry));
 					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * Builds the command tree (internal) structure.
+	 * <p>
+	 * @throws CommandManagerException Thrown in case an error occurred while loading parameter attributes.
+	 */
 	@SuppressWarnings("nls")
 	private final static void buildCommandTree() throws CommandManagerException
 	{
