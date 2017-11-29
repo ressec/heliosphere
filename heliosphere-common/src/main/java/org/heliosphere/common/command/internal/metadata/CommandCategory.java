@@ -11,7 +11,7 @@
  */
 package org.heliosphere.common.command.internal.metadata;
 
-import org.heliosphere.common.command.exception.CommandCategoryException;
+import org.heliosphere.common.command.exception.CommandException;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -58,16 +58,16 @@ public class CommandCategory
 	}
 
 	/**
-	 * Checks if the command category is valid.
+	 * Validates if the command category is valid.
 	 * <p>
-	 * @throws CommandCategoryException Thrown in case an error occurred while validating the command category.
+	 * @throws CommandException Thrown in case an error occurred while validating the command category.
 	 */
 	@SuppressWarnings("nls")
-	public void checkValidity() throws CommandCategoryException
+	public void validate() throws CommandException
 	{
 		if (getName() == null || getPrefix() == null)
 		{
-			throw new CommandCategoryException(String.format("Command category: %1s is not valid. Some required fields are missing!", getName()));
+			throw new CommandException(String.format("Command category: %1s is not valid. Some required fields are missing!", getName()));
 		}
 	}
 }

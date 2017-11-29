@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.heliosphere.common.command.exception.CommandException;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -167,6 +169,20 @@ public class CommandMetadata
 		if (!examples.contains(example))
 		{
 			examples.add(example);
+		}
+	}
+
+	/**
+	 * Validates if the command is valid.
+	 * <p>
+	 * @throws CommandException Thrown in case an error occurred while validating the command.
+	 */
+	@SuppressWarnings("nls")
+	public void validate() throws CommandException
+	{
+		if (this.name == null)
+		{
+			throw new CommandException(String.format("Command: %1s is not valid because the required entry 'name' has not been found!", description));
 		}
 	}
 }
