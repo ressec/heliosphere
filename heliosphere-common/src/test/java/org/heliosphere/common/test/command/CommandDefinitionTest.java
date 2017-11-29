@@ -223,6 +223,17 @@ public final class CommandDefinitionTest
 	}
 
 	/**
+	 * Test the registration of the command attributes.
+	 */
+	@SuppressWarnings("static-method")
+	@Test
+	@Ignore
+	public final void testCommandAttributes()
+	{
+		fail("Not implemented!");
+	}
+
+	/**
 	 * Test the registration of the command parameters.
 	 */
 	@SuppressWarnings("static-method")
