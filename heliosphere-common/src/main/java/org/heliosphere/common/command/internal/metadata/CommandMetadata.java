@@ -1,7 +1,7 @@
 /*
  * Copyright(c) 2016 - Heliosphere Corp.
  * ---------------------------------------------------------------------------
- * This file is part of the Heliosphere's project which is licensed under the 
+ * This file is part of the Heliosphere's project which is licensed under the
  * Apache license version 2 and use is subject to license terms.
  * You should have received a copy of the license with the project's artifact
  * binaries and/or sources.
@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.heliosphere.common.command.exception.CommandException;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -57,6 +59,13 @@ public class CommandMetadata
 	@Getter
 	@Setter
 	private String processor;
+
+	/**
+	 * Command validator class name.
+	 */
+	@Getter
+	@Setter
+	private String validator;
 
 	/**
 	 * Command name.
@@ -138,7 +147,7 @@ public class CommandMetadata
 		{
 			aliases = new ArrayList<>();
 		}
-		
+
 		if (!aliases.contains(alias))
 		{
 			aliases.add(alias);
@@ -160,6 +169,20 @@ public class CommandMetadata
 		if (!examples.contains(example))
 		{
 			examples.add(example);
+		}
+	}
+
+	/**
+	 * Validates if the command is valid.
+	 * <p>
+	 * @throws CommandException Thrown in case an error occurred while validating the command.
+	 */
+	@SuppressWarnings("nls")
+	public void validate() throws CommandException
+	{
+		if (this.name == null)
+		{
+			throw new CommandException(String.format("Command: %1s is not valid because the required entry 'name' has not been found!", description));
 		}
 	}
 }
