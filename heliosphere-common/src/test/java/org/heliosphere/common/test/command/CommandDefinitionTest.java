@@ -13,6 +13,7 @@ package org.heliosphere.common.test.command;
 
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.heliosphere.common.command.CommandManager;
@@ -113,11 +114,20 @@ public final class CommandDefinitionTest
 	@Test
 	public final void testCommandCategorie()
 	{
+		// Command categories.
+		String[] names = new String[] {"debug", "normal", "administration", "system", "power"};
+
 		try
 		{
 			CommandManager.registerFromFile("./command/definition/command-system.properties");
-			List<CommandCategory> commands = CommandManager.getCategories();
-			int count = CommandManager.getCommandCount();
+			List<CommandCategory> categories = CommandManager.getCategories();
+
+			for (CommandCategory category : categories)
+			{
+				Assert.assertTrue(
+						String.format("Excepted category names: %1s but found value was: %2s", names, category.getName()),
+						Arrays.asList(names).contains(category.getName()));
+			}
 		}
 		catch (CommandManagerException e)
 		{
