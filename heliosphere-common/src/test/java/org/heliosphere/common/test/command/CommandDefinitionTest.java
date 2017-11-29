@@ -19,6 +19,9 @@ import java.util.List;
 import org.heliosphere.common.command.CommandManager;
 import org.heliosphere.common.command.exception.CommandManagerException;
 import org.heliosphere.common.command.internal.metadata.CommandCategory;
+import org.heliosphere.common.command.internal.metadata.CommandDomain;
+import org.heliosphere.common.command.internal.metadata.CommandGroup;
+import org.heliosphere.common.command.internal.metadata.CommandMetadata;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -115,7 +118,7 @@ public final class CommandDefinitionTest
 	public final void testCommandCategorie()
 	{
 		// Command categories.
-		String[] names = new String[] {"debug", "normal", "administration", "system", "power"};
+		String[] names = new String[] { "debug", "normal", "administration", "system", "power" };
 
 		try
 		{
@@ -140,10 +143,27 @@ public final class CommandDefinitionTest
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public final void testCommandDomain()
 	{
-		fail("Not implemented!");
+		// Command domains.
+		String[] names = new String[] { "application" };
+
+		try
+		{
+			CommandManager.registerFromFile("./command/definition/command-system.properties");
+			List<CommandDomain> domains = CommandManager.getDomains();
+
+			for (CommandDomain domain : domains)
+			{
+				Assert.assertTrue(
+						String.format("Excepted domain names are: %1s but extracted value was: %2s", names, domain.getName()),
+						Arrays.asList(names).contains(domain.getName()));
+			}
+		}
+		catch (CommandManagerException e)
+		{
+			fail(e.getLocalizedMessage());
+		}
 	}
 
 	/**
@@ -151,10 +171,27 @@ public final class CommandDefinitionTest
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public final void testCommandGroup()
 	{
-		fail("Not implemented!");
+		// Command groups.
+		String[] names = new String[] { "chat", "system" };
+
+		try
+		{
+			CommandManager.registerFromFile("./command/definition/command-system.properties");
+			List<CommandGroup> groups = CommandManager.getGroups();
+
+			for (CommandGroup group : groups)
+			{
+				Assert.assertTrue(
+						String.format("Excepted group names are: %1s but extracted value was: %2s", names, group.getName()),
+						Arrays.asList(names).contains(group.getName()));
+			}
+		}
+		catch (CommandManagerException e)
+		{
+			fail(e.getLocalizedMessage());
+		}
 	}
 
 	/**
@@ -162,10 +199,27 @@ public final class CommandDefinitionTest
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public final void testCommand()
 	{
-		fail("Not implemented!");
+		// Commands.
+		String[] names = new String[] { "quit", "say", "afk" };
+
+		try
+		{
+			CommandManager.registerFromFile("./command/definition/command-system.properties");
+			List<CommandMetadata> commands = CommandManager.getCommands();
+
+			for (CommandMetadata command : commands)
+			{
+				Assert.assertTrue(
+						String.format("Excepted command names are: %1s but extracted value was: %2s", names, command.getName()),
+						Arrays.asList(names).contains(command.getName()));
+			}
+		}
+		catch (CommandManagerException e)
+		{
+			fail(e.getLocalizedMessage());
+		}
 	}
 
 	/**

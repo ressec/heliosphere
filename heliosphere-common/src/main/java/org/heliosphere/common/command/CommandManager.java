@@ -233,6 +233,16 @@ public class CommandManager
 	}
 
 	/**
+	 * Returns a list of registered command domains.
+	 * <p>
+	 * @return List of command domains.
+	 */
+	public static final List<CommandDomain> getDomains()
+	{
+		return Collections.unmodifiableList(new ArrayList<>(DOMAINS.values()));
+	}
+
+	/**
 	 * Returns a list of registered command domain names for a given command category name.
 	 * <p>
 	 * @param category Command category name.
@@ -250,6 +260,16 @@ public class CommandManager
 		}
 
 		return null;
+	}
+
+	/**
+	 * Returns a list of registered command groups.
+	 * <p>
+	 * @return List of command groups.
+	 */
+	public static final List<CommandGroup> getGroups()
+	{
+		return Collections.unmodifiableList(new ArrayList<>(GROUPS.values()));
 	}
 
 	/**
@@ -273,6 +293,16 @@ public class CommandManager
 		}
 
 		return null;
+	}
+
+	/**
+	 * Returns a list of registered commands.
+	 * <p>
+	 * @return List of commands.
+	 */
+	public static final List<CommandMetadata> getCommands()
+	{
+		return Collections.unmodifiableList(new ArrayList<>(COMMANDS.values()));
 	}
 
 	/**
