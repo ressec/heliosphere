@@ -16,12 +16,12 @@ import org.heliosphere.common.exception.IExceptionType;
 import org.heliosphere.common.resource.bundle.IBundle;
 
 /**
- * Checked exception thrown to indicate an error occurred while initializing a command category.
+ * Checked exception thrown to indicate an error occurred while initializing a command.
  * <hr>
  * @author <a href="mailto:christophe.resse@gmail.com">Christophe Resse - Heliosphere</a>
  * @version 1.0.0
  */
-public class CommandCategoryException extends AbstractCheckedException
+public class CommandException extends AbstractCheckedException
 {
 	/**
 	 * Serialization identifier.
@@ -29,66 +29,66 @@ public class CommandCategoryException extends AbstractCheckedException
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Exception thrown to indicate an error occurred while initializing a command category.
+	 * Exception thrown to indicate an error occurred while initializing a command.
 	 */
-	public CommandCategoryException()
+	public CommandException()
 	{
 		super();
 	}
 
 	/**
-	 * Exception thrown to indicate an error occurred while initializing a command category.
+	 * Exception thrown to indicate an error occurred while initializing a command.
 	 * <p>
 	 * @param key Resource bundle key (enumerated value coming from an
 	 * enumeration implementing the {@link IBundle} interface).
 	 */
-	public CommandCategoryException(final Enum<? extends IBundle> key)
+	public CommandException(final Enum<? extends IBundle> key)
 	{
 		super(key);
 	}
 
 	/**
-	 * Exception thrown to indicate an error occurred while initializing a command category.
+	 * Exception thrown to indicate an error occurred while initializing a command.
 	 * <p>
 	 * @param key Exception key (enumerated value coming from an enumeration
 	 * implementing the {@link IExceptionType} interface).
 	 * @param parameters List of parameters used to populate the exception
 	 * message.
 	 */
-	public CommandCategoryException(final Enum<?> key, final Object... parameters)
+	public CommandException(final Enum<?> key, final Object... parameters)
 	{
 		super(key, parameters);
 	}
 
 	/**
-	 * Exception thrown to indicate an error occurred while initializing a command category.
+	 * Exception thrown to indicate an error occurred while initializing a command.
 	 * <p>
 	 * @param exception Parent exception.
 	 */
-	public CommandCategoryException(final Exception exception)
+	public CommandException(final Exception exception)
 	{
 		super(exception);
 	}
 
 	/**
-	 * Exception thrown to indicate an error occurred while initializing a command category.
+	 * Exception thrown to indicate an error occurred while initializing a command.
 	 * <p>
 	 * @param message Message describing the error being the cause of the raised
 	 * exception.
 	 */
-	public CommandCategoryException(final String message)
+	public CommandException(final String message)
 	{
 		super(message);
 	}
 
 	/**
-	 * Exception thrown to indicate an error occurred while initializing a command category.
+	 * Exception thrown to indicate an error occurred while initializing a command.
 	 * <p>
 	 * @param message Message describing the error being the cause of the raised
 	 * exception.
 	 * @param exception Parent exception.
 	 */
-	public CommandCategoryException(final String message, final Exception exception)
+	public CommandException(final String message, final Exception exception)
 	{
 		super(message, exception);
 	}
