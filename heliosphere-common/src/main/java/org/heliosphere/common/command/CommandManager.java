@@ -799,7 +799,7 @@ public class CommandManager
 	{
 		String values[] = null;
 
-		List<String> attributes = Lists.newArrayList(properties.getKeys(COMMAND_PREFIX + "." + command.getName()));
+		List<String> attributes = Lists.newArrayList(properties.getKeys(COMMAND_PREFIX + "." + command.getCategory() + "." + command.getDomain() + "." + command.getGroup() + "." + command.getName()));
 
 		for (String attribute : attributes)
 		{
