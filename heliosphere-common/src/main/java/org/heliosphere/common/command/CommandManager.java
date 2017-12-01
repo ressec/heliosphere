@@ -282,6 +282,25 @@ public class CommandManager
 	}
 
 	/**
+	 * Returns a command domain given its name.
+	 * <p>
+	 * @param name Domain name.
+	 * @return {@link CommandDomain} if found, otherwise {@code null} is returned.
+	 */
+	public static final CommandDomain getDomain(final @NonNull String name)
+	{
+		for (CommandDomain domain : DOMAINS.values())
+		{
+			if (domain.getName().equals(name))
+			{
+				return domain;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns a list of registered command groups.
 	 * <p>
 	 * @return List of command groups.
