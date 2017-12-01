@@ -334,6 +334,25 @@ public class CommandManager
 	}
 
 	/**
+	 * Returns a command group given its name.
+	 * <p>
+	 * @param name Group name.
+	 * @return {@link CommandGroup} if found, otherwise {@code null} is returned.
+	 */
+	public static final CommandGroup getGroup(final @NonNull String name)
+	{
+		for (CommandGroup group : GROUPS.values())
+		{
+			if (group.getName().equals(name))
+			{
+				return group;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns a list of registered commands.
 	 * <p>
 	 * @return List of commands.
