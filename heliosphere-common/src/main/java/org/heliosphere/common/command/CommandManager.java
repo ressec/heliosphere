@@ -363,6 +363,38 @@ public class CommandManager
 	}
 
 	/**
+	 * Returns a command definition given its name or alias.
+	 * <p>
+	 * @param name Command name or alias.
+	 * @return {@link CommandMetadata} if found, otherwise {@code null} is returned.
+	 */
+	public static final CommandMetadata getCommand(final @NonNull String name)
+	{
+		// Lookup using command name.
+		for (CommandMetadata command : COMMANDS.values())
+		{
+			if (command.getName().equals(name))
+			{
+				return command;
+			}
+		}
+
+		// Lookup using aliases.
+		for (CommandMetadata command : COMMANDS.values())
+		{
+			for (String alias : command.getAliases())
+			{
+				if (alias.equals(name))
+				{
+					return command;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns a list of registered command names for a given command category, domain and group names.
 	 * <p>
 	 * @param category Command category name.
