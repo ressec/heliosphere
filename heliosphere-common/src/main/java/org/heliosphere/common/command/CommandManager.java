@@ -233,6 +233,25 @@ public class CommandManager
 	}
 
 	/**
+	 * Returns a command category given its name.
+	 * <p>
+	 * @param name Category name.
+	 * @return {@link CommandCategory} if found, otherwise {@code null} is returned.
+	 */
+	public static final CommandCategory getCategory(final @NonNull String name)
+	{
+		for (CommandCategory category : CATEGORIES.values())
+		{
+			if (category.getName().equals(name))
+			{
+				return category;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns a list of registered command domains.
 	 * <p>
 	 * @return List of command domains.
