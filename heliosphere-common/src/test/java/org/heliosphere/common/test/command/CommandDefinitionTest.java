@@ -115,7 +115,7 @@ public final class CommandDefinitionTest
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	public final void testCommandCategorie()
+	public final void testCommandCategory()
 	{
 		// Command categories.
 		String[] names = new String[] { "debug", "normal", "administration", "system", "power" };
@@ -223,14 +223,46 @@ public final class CommandDefinitionTest
 	}
 
 	/**
-	 * Test the registration of the command attributes.
+	 * Test the registration of a command attributes.
 	 */
 	@SuppressWarnings("static-method")
 	@Test
 	@Ignore
 	public final void testCommandAttributes()
 	{
-		fail("Not implemented!");
+		String COMMAND_NAME = "say";
+		String COMMAND_DESCRIPTION = "Sends a message to another user.";
+		String[] COMMAND_ALIASES = {"exit", "leave"};
+
+		try
+		{
+			CommandManager.registerFromFile("./command/definition/command-system.properties");
+			CommandMetadata command = CommandManager.getCommand(COMMAND_NAME);
+
+			Assert.assertTrue(
+					String.format("Command: %1s has not been found!", COMMAND_NAME),
+					command != null);
+
+			Assert.assertTrue(
+					String.format("Command: %1s has not been found!", COMMAND_NAME),
+					command.getName().equals(COMMAND_NAME));
+
+			Assert.assertTrue(
+					String.format("Command: %1s excpected description: %2s but was: %3s", COMMAND_NAME, COMMAND_DESCRIPTION),
+					command.getDescription().equals(COMMAND_DESCRIPTION));
+
+			for (String alias : command.getAliases())
+			{
+				Assert.assertTrue(
+						String.format("Command: %1s excpected aliases: %2s but found alias: %3s", COMMAND_NAME, COMMAND_ALIASES, alias),
+						Arrays.asList(COMMAND_ALIASES).contains(alias));
+			}
+
+		}
+		catch (CommandManagerException e)
+		{
+			fail(e.getLocalizedMessage());
+		}
 	}
 
 	/**
