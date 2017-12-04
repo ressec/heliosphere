@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.heliosphere.common.command.CommandManager;
 import org.heliosphere.common.command.exception.CommandException;
 
 import lombok.Getter;
@@ -37,21 +38,21 @@ public class CommandMetadata
 	 */
 	@Getter
 	@Setter
-	private String category;
+	private CommandCategory category;
 
 	/**
 	 * Command domain.
 	 */
 	@Getter
 	@Setter
-	private String domain;
+	private CommandDomain domain;
 
 	/**
 	 * Command group.
 	 */
 	@Getter
 	@Setter
-	private String group;
+	private CommandGroup group;
 
 	/**
 	 * Command processor class name.
@@ -114,11 +115,27 @@ public class CommandMetadata
 	 * @param group Command group.
 	 * @param name Command name.
 	 */
-	public CommandMetadata(final @NonNull String category, final @NonNull String domain, final @NonNull String group, final @NonNull String name)
+	public CommandMetadata(final @NonNull CommandCategory category, final @NonNull CommandDomain domain, final @NonNull CommandGroup group, final @NonNull String name)
 	{
 		this.category = category;
 		this.domain = domain;
 		this.group = group;
+		this.name = name;
+	}
+
+	/**
+	 * Creates a new command metadata (definition).
+	 * <hr>
+	 * @param category Command category name.
+	 * @param domain Command domain name.
+	 * @param group Command group name.
+	 * @param name Command name.
+	 */
+	public CommandMetadata(final @NonNull String category, final @NonNull String domain, final @NonNull String group, final @NonNull String name)
+	{
+		this.category = CommandManager.getCategory(category);
+		this.domain = CommandManager.getDomain(domain);
+		this.group = CommandManager.getGroup(group);
 		this.name = name;
 	}
 
