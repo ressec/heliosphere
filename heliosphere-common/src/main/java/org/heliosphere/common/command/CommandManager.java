@@ -1057,9 +1057,9 @@ public class CommandManager
 
 		for (CommandMetadata command : new ArrayList<>(COMMANDS.values()))
 		{
-			c = CATEGORIES.get(command.getCategory());
-			d = DOMAINS.get(command.getDomain());
-			g = GROUPS.get(command.getGroup());
+			c = CATEGORIES.get(command.getCategory().getName());
+			d = DOMAINS.get(command.getDomain().getName());
+			g = GROUPS.get(command.getGroup().getName());
 
 			if (c == null)
 			{
