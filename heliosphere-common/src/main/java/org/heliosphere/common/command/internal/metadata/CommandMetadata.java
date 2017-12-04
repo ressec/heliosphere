@@ -154,6 +154,17 @@ public class CommandMetadata
 	}
 
 	/**
+	 * Retrieves a parameter given its name.
+	 * <p>
+	 * @param name Parameter name.
+	 * @return {@link CommandParameterMetadata} if found, {@code null} otherwise.
+	 */
+	public final CommandParameterMetadata getParameter(final @NonNull String name)
+	{
+		return parameters.get(name);
+	}
+
+	/**
 	 * Adds an alias to the list of aliases.
 	 * <p>
 	 * @param alias Alias to add.
