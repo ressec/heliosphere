@@ -283,15 +283,16 @@ public final class CommandDefinitionTest
 	@Test
 	public final void testCommandParameter()
 	{
-		String   COMMAND_NAME = "say";
-		String   COMMAND_PARAMETER_NAME = "recipient";
-		String   COMMAND_PARAMETER_DESCRIPTION = "The recipient of the message.";
-		String   COMMAND_PARAMETER_VALIDATOR = "org.heliosphere.common.parameter.validator.default.StringParameterValidator";
-		String   COMMAND_PARAMETER_FORMATTER = "None | Lower | Upper | Capitalize | <Custom Formatter Class Path Name>";
-		String   COMMAND_PARAMETER_SYNTAX = "(-to)\\s++([a-zA-Z-_]+\\s?)+";
-		String   COMMAND_PARAMETER_TYPE = "String";
-		String   COMMAND_PARAMETER_MINIMUM = "1";
-		String   COMMAND_PARAMETER_MAXIMUM = "20";
+		String  COMMAND_NAME = "say";
+		String  COMMAND_PARAMETER_NAME = "recipient";
+		String  COMMAND_PARAMETER_DESCRIPTION = "The recipient of the message.";
+		String  COMMAND_PARAMETER_VALIDATOR = "org.heliosphere.common.parameter.validator.default.StringParameterValidator";
+		String  COMMAND_PARAMETER_FORMATTER = "None | Lower | Upper | Capitalize | <Custom Formatter Class Path Name>";
+		String  COMMAND_PARAMETER_SYNTAX = "(-to)\\s++([a-zA-Z-_]+\\s?)+";
+		String  COMMAND_PARAMETER_TYPE = "String";
+		String  COMMAND_PARAMETER_MINIMUM = "1";
+		String  COMMAND_PARAMETER_MAXIMUM = "20";
+		int     COMMAND_PARAMETER_COUNT = 2;
 
 		try
 		{
@@ -301,6 +302,10 @@ public final class CommandDefinitionTest
 			Assert.assertTrue(
 					String.format("Command: %1$s has not been found!", COMMAND_NAME),
 					command != null);
+
+			Assert.assertTrue(
+					String.format("Command: %1$s expected parameters count: %2$d but found: %3$d", COMMAND_NAME, Integer.valueOf(COMMAND_PARAMETER_COUNT), Integer.valueOf(command.getParameters().size())),
+					command.getParameters().size() == COMMAND_PARAMETER_COUNT);
 
 			CommandParameterMetadata parameter = command.getParameter(COMMAND_PARAMETER_NAME);
 
