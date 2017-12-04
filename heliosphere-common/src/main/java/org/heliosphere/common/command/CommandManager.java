@@ -887,8 +887,18 @@ public class CommandManager
 	private static final CommandMetadata loadCommandAttributes(@NonNull CommandMetadata command) throws CommandException
 	{
 		String values[] = null;
+		StringBuilder key = new StringBuilder(COMMAND_PREFIX)
+				.append(".")
+				.append(command.getCategory().getName())
+				.append(".")
+				.append(command.getDomain().getName())
+				.append(".")
+				.append(command.getGroup().getName())
+				.append(".")
+				.append(command.getName());
 
-		List<String> attributes = Lists.newArrayList(properties.getKeys(COMMAND_PREFIX + "." + command.getCategory() + "." + command.getDomain() + "." + command.getGroup() + "." + command.getName()));
+
+		List<String> attributes = Lists.newArrayList(properties.getKeys(key.toString()));
 
 		for (String attribute : attributes)
 		{
@@ -966,11 +976,11 @@ public class CommandManager
 
 			filter = new StringBuilder(COMMAND_PREFIX)
 					.append(".")
-					.append(command.getCategory())
+					.append(command.getCategory().getName())
 					.append(".")
-					.append(command.getDomain())
+					.append(command.getDomain().getName())
 					.append(".")
-					.append(command.getGroup())
+					.append(command.getGroup().getName())
 					.append(".")
 					.append(command.getName())
 					.append(".parameter");
