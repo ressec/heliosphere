@@ -233,6 +233,25 @@ public class CommandManager
 	}
 
 	/**
+	 * Returns a command category given its name.
+	 * <p>
+	 * @param name Category name.
+	 * @return {@link CommandCategory} if found, otherwise {@code null} is returned.
+	 */
+	public static final CommandCategory getCategory(final @NonNull String name)
+	{
+		for (CommandCategory category : CATEGORIES.values())
+		{
+			if (category.getName().equals(name))
+			{
+				return category;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns a list of registered command domains.
 	 * <p>
 	 * @return List of command domains.
@@ -257,6 +276,25 @@ public class CommandManager
 		if (MAP_DOMAINS != null)
 		{
 			return Collections.unmodifiableList((List<String>) MAP_DOMAINS.keySet());
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns a command domain given its name.
+	 * <p>
+	 * @param name Domain name.
+	 * @return {@link CommandDomain} if found, otherwise {@code null} is returned.
+	 */
+	public static final CommandDomain getDomain(final @NonNull String name)
+	{
+		for (CommandDomain domain : DOMAINS.values())
+		{
+			if (domain.getName().equals(name))
+			{
+				return domain;
+			}
 		}
 
 		return null;
@@ -296,6 +334,25 @@ public class CommandManager
 	}
 
 	/**
+	 * Returns a command group given its name.
+	 * <p>
+	 * @param name Group name.
+	 * @return {@link CommandGroup} if found, otherwise {@code null} is returned.
+	 */
+	public static final CommandGroup getGroup(final @NonNull String name)
+	{
+		for (CommandGroup group : GROUPS.values())
+		{
+			if (group.getName().equals(name))
+			{
+				return group;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns a list of registered commands.
 	 * <p>
 	 * @return List of commands.
@@ -303,6 +360,38 @@ public class CommandManager
 	public static final List<CommandMetadata> getCommands()
 	{
 		return Collections.unmodifiableList(new ArrayList<>(COMMANDS.values()));
+	}
+
+	/**
+	 * Returns a command definition given its name or alias.
+	 * <p>
+	 * @param name Command name or alias.
+	 * @return {@link CommandMetadata} if found, otherwise {@code null} is returned.
+	 */
+	public static final CommandMetadata getCommand(final @NonNull String name)
+	{
+		// Lookup using command name.
+		for (CommandMetadata command : COMMANDS.values())
+		{
+			if (command.getName().equals(name))
+			{
+				return command;
+			}
+		}
+
+		// Lookup using aliases.
+		for (CommandMetadata command : COMMANDS.values())
+		{
+			for (String alias : command.getAliases())
+			{
+				if (alias.equals(name))
+				{
+					return command;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -798,8 +887,18 @@ public class CommandManager
 	private static final CommandMetadata loadCommandAttributes(@NonNull CommandMetadata command) throws CommandException
 	{
 		String values[] = null;
+		StringBuilder key = new StringBuilder(COMMAND_PREFIX)
+				.append(".")
+				.append(command.getCategory().getName())
+				.append(".")
+				.append(command.getDomain().getName())
+				.append(".")
+				.append(command.getGroup().getName())
+				.append(".")
+				.append(command.getName());
 
-		List<String> attributes = Lists.newArrayList(properties.getKeys(COMMAND_PREFIX + "." + command.getCategory() + "." + command.getDomain() + "." + command.getGroup() + "." + command.getName()));
+
+		List<String> attributes = Lists.newArrayList(properties.getKeys(key.toString()));
 
 		for (String attribute : attributes)
 		{
@@ -877,11 +976,11 @@ public class CommandManager
 
 			filter = new StringBuilder(COMMAND_PREFIX)
 					.append(".")
-					.append(command.getCategory())
+					.append(command.getCategory().getName())
 					.append(".")
-					.append(command.getDomain())
+					.append(command.getDomain().getName())
 					.append(".")
-					.append(command.getGroup())
+					.append(command.getGroup().getName())
 					.append(".")
 					.append(command.getName())
 					.append(".parameter");
@@ -968,9 +1067,9 @@ public class CommandManager
 
 		for (CommandMetadata command : new ArrayList<>(COMMANDS.values()))
 		{
-			c = CATEGORIES.get(command.getCategory());
-			d = DOMAINS.get(command.getDomain());
-			g = GROUPS.get(command.getGroup());
+			c = CATEGORIES.get(command.getCategory().getName());
+			d = DOMAINS.get(command.getDomain().getName());
+			g = GROUPS.get(command.getGroup().getName());
 
 			if (c == null)
 			{
