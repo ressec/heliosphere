@@ -9,7 +9,7 @@
  * License can be consulted at http://www.apache.org/licenses/LICENSE-2.0
  * ---------------------------------------------------------------------------
  */
-package org.heliosphere.common.command.internal.metadata;
+package org.heliosphere.common.command.definition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import lombok.ToString;
  * @version 1.0.0
  */
 @ToString
-public class CommandMetadata
+public class CommandDefinition
 {
 	/**
 	 * Command category.
@@ -105,7 +105,7 @@ public class CommandMetadata
 	 * Collection of command parameters.
 	 */
 	@Getter
-	private Map<String, CommandParameterMetadata> parameters = new HashMap<>();
+	private Map<String, CommandParameterDefinition> parameters = new HashMap<>();
 
 	/**
 	 * Creates a new command metadata (definition).
@@ -115,7 +115,7 @@ public class CommandMetadata
 	 * @param group Command group.
 	 * @param name Command name.
 	 */
-	public CommandMetadata(final @NonNull CommandCategory category, final @NonNull CommandDomain domain, final @NonNull CommandGroup group, final @NonNull String name)
+	public CommandDefinition(final @NonNull CommandCategory category, final @NonNull CommandDomain domain, final @NonNull CommandGroup group, final @NonNull String name)
 	{
 		this.category = category;
 		this.domain = domain;
@@ -131,7 +131,7 @@ public class CommandMetadata
 	 * @param group Command group name.
 	 * @param name Command name.
 	 */
-	public CommandMetadata(final @NonNull String category, final @NonNull String domain, final @NonNull String group, final @NonNull String name)
+	public CommandDefinition(final @NonNull String category, final @NonNull String domain, final @NonNull String group, final @NonNull String name)
 	{
 		this.category = CommandManager.getCategory(category);
 		this.domain = CommandManager.getDomain(domain);
@@ -145,7 +145,7 @@ public class CommandMetadata
 	 * @param name Parameter name.
 	 * @param parameter Parameter.
 	 */
-	public final void addParameter(final @NonNull String name, final @NonNull CommandParameterMetadata parameter)
+	public final void addParameter(final @NonNull String name, final @NonNull CommandParameterDefinition parameter)
 	{
 		if (!parameters.containsKey(name))
 		{
@@ -157,9 +157,9 @@ public class CommandMetadata
 	 * Retrieves a parameter given its name.
 	 * <p>
 	 * @param name Parameter name.
-	 * @return {@link CommandParameterMetadata} if found, {@code null} otherwise.
+	 * @return {@link CommandParameterDefinition} if found, {@code null} otherwise.
 	 */
-	public final CommandParameterMetadata getParameter(final @NonNull String name)
+	public final CommandParameterDefinition getParameter(final @NonNull String name)
 	{
 		return parameters.get(name);
 	}

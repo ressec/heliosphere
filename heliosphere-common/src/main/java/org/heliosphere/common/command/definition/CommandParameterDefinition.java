@@ -9,7 +9,7 @@
  * License can be consulted at http://www.apache.org/licenses/LICENSE-2.0
  * ---------------------------------------------------------------------------
  */
-package org.heliosphere.common.command.internal.metadata;
+package org.heliosphere.common.command.definition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import lombok.ToString;
  * @version 1.0.0
  */
 @ToString
-public class CommandParameterMetadata
+public class CommandParameterDefinition
 {
 	/**
 	 * Command parameter name.
@@ -94,7 +94,7 @@ public class CommandParameterMetadata
 	 * <hr>
 	 * @param name Command parameter name.
 	 */
-	public CommandParameterMetadata(final @NonNull String name)
+	public CommandParameterDefinition(final @NonNull String name)
 	{
 		this.name = name;
 	}
