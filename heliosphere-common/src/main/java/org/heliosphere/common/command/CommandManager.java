@@ -22,13 +22,13 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.NotImplementedException;
+import org.heliosphere.common.command.definition.CommandCategory;
+import org.heliosphere.common.command.definition.CommandDefinition;
+import org.heliosphere.common.command.definition.CommandDomain;
+import org.heliosphere.common.command.definition.CommandGroup;
+import org.heliosphere.common.command.definition.CommandParameterDefinition;
 import org.heliosphere.common.command.exception.CommandException;
 import org.heliosphere.common.command.exception.CommandManagerException;
-import org.heliosphere.common.command.internal.metadata.CommandCategory;
-import org.heliosphere.common.command.internal.metadata.CommandDomain;
-import org.heliosphere.common.command.internal.metadata.CommandGroup;
-import org.heliosphere.common.command.internal.metadata.CommandMetadata;
-import org.heliosphere.common.command.internal.metadata.CommandParameterMetadata;
 import org.heliosphere.common.resource.ResourceException;
 import org.heliosphere.common.resource.internal.Resource;
 
@@ -203,12 +203,12 @@ public class CommandManager
 	/**
 	 * Commands.
 	 */
-	private static Map<String, CommandMetadata> COMMANDS = new HashMap<>();
+	private static Map<String, CommandDefinition> COMMANDS = new HashMap<>();
 
 	/**
 	 * Internal ordered command structure.
 	 */
-	private static Map<String, Map<String, Map<String, Map<String, CommandMetadata>>>> MAP = new HashMap<>();
+	private static Map<String, Map<String, Map<String, Map<String, CommandDefinition>>>> MAP = new HashMap<>();
 
 	/**
 	 * Returns a list of registered command categories.
@@ -272,7 +272,7 @@ public class CommandManager
 	{
 
 
-		Map<String, Map<String, Map<String, CommandMetadata>>> MAP_DOMAINS = MAP.get(category);
+		Map<String, Map<String, Map<String, CommandDefinition>>> MAP_DOMAINS = MAP.get(category);
 		if (MAP_DOMAINS != null)
 		{
 			return Collections.unmodifiableList((List<String>) MAP_DOMAINS.keySet());
@@ -320,10 +320,10 @@ public class CommandManager
 	@SuppressWarnings("unchecked")
 	public static final List<String> getGroupNames(final @NonNull String category, final @NonNull String domain)
 	{
-		Map<String, Map<String, Map<String, CommandMetadata>>> MAP_DOMAINS = MAP.get(category);
+		Map<String, Map<String, Map<String, CommandDefinition>>> MAP_DOMAINS = MAP.get(category);
 		if (MAP_DOMAINS != null)
 		{
-			Map<String, Map<String, CommandMetadata>> MAP_GROUPS = MAP_DOMAINS.get(domain);
+			Map<String, Map<String, CommandDefinition>> MAP_GROUPS = MAP_DOMAINS.get(domain);
 			if (MAP_GROUPS != null)
 			{
 				return Collections.unmodifiableList((List<String>) MAP_GROUPS.keySet());
@@ -357,7 +357,7 @@ public class CommandManager
 	 * <p>
 	 * @return List of commands.
 	 */
-	public static final List<CommandMetadata> getCommands()
+	public static final List<CommandDefinition> getCommands()
 	{
 		return Collections.unmodifiableList(new ArrayList<>(COMMANDS.values()));
 	}
@@ -366,12 +366,12 @@ public class CommandManager
 	 * Returns a command definition given its name or alias.
 	 * <p>
 	 * @param name Command name or alias.
-	 * @return {@link CommandMetadata} if found, otherwise {@code null} is returned.
+	 * @return {@link CommandDefinition} if found, otherwise {@code null} is returned.
 	 */
-	public static final CommandMetadata getCommand(final @NonNull String name)
+	public static final CommandDefinition getCommand(final @NonNull String name)
 	{
 		// Lookup using command name.
-		for (CommandMetadata command : COMMANDS.values())
+		for (CommandDefinition command : COMMANDS.values())
 		{
 			if (command.getName().equals(name))
 			{
@@ -380,7 +380,7 @@ public class CommandManager
 		}
 
 		// Lookup using aliases.
-		for (CommandMetadata command : COMMANDS.values())
+		for (CommandDefinition command : COMMANDS.values())
 		{
 			for (String alias : command.getAliases())
 			{
@@ -405,13 +405,13 @@ public class CommandManager
 	@SuppressWarnings("unchecked")
 	public static final List<String> getCommandNames(final @NonNull String category, final @NonNull String domain, final @NonNull String group)
 	{
-		Map<String, Map<String, Map<String, CommandMetadata>>> MAP_DOMAINS = MAP.get(category);
+		Map<String, Map<String, Map<String, CommandDefinition>>> MAP_DOMAINS = MAP.get(category);
 		if (MAP_DOMAINS != null)
 		{
-			Map<String, Map<String, CommandMetadata>> MAP_GROUPS = MAP_DOMAINS.get(domain);
+			Map<String, Map<String, CommandDefinition>> MAP_GROUPS = MAP_DOMAINS.get(domain);
 			if (MAP_GROUPS != null)
 			{
-				Map<String, CommandMetadata> MAP_COMMANDS = MAP_GROUPS.get(group);
+				Map<String, CommandDefinition> MAP_COMMANDS = MAP_GROUPS.get(group);
 				if (MAP_COMMANDS != null)
 				{
 					return Collections.unmodifiableList((List<String>) MAP_COMMANDS.keySet());
@@ -431,15 +431,15 @@ public class CommandManager
 	 * @return List of commands.
 	 */
 	@SuppressWarnings("unused")
-	public static final List<CommandMetadata> getCommands(final @NonNull String category, final @NonNull String domain, final @NonNull String group)
+	public static final List<CommandDefinition> getCommands(final @NonNull String category, final @NonNull String domain, final @NonNull String group)
 	{
-		Map<String, Map<String, Map<String, CommandMetadata>>> MAP_DOMAINS = MAP.get(category);
+		Map<String, Map<String, Map<String, CommandDefinition>>> MAP_DOMAINS = MAP.get(category);
 		if (MAP_DOMAINS != null)
 		{
-			Map<String, Map<String, CommandMetadata>> MAP_GROUPS = MAP_DOMAINS.get(domain);
+			Map<String, Map<String, CommandDefinition>> MAP_GROUPS = MAP_DOMAINS.get(domain);
 			if (MAP_GROUPS != null)
 			{
-				Map<String, CommandMetadata> MAP_COMMANDS = MAP_GROUPS.get(group);
+				Map<String, CommandDefinition> MAP_COMMANDS = MAP_GROUPS.get(group);
 				if (MAP_COMMANDS != null)
 				{
 					return Collections.unmodifiableList(new ArrayList<>(MAP_COMMANDS.values()));
@@ -809,7 +809,7 @@ public class CommandManager
 	@SuppressWarnings("nls")
 	private static final void loadCommands() throws CommandException
 	{
-		CommandMetadata command = null;
+		CommandDefinition command = null;
 		String values[] = null;
 		String category = null;
 		String domain = null;
@@ -860,7 +860,7 @@ public class CommandManager
 
 					if (!COMMANDS.containsKey(tag))
 					{
-						command = new CommandMetadata(category, domain, group, tag);
+						command = new CommandDefinition(category, domain, group, tag);
 						command = loadCommandAttributes(command);
 						command.validate();
 						COMMANDS.put(tag, command);
@@ -870,7 +870,7 @@ public class CommandManager
 		}
 
 		// Summarize the loaded commands.
-		for (CommandMetadata e : COMMANDS.values())
+		for (CommandDefinition e : COMMANDS.values())
 		{
 			log.info(String.format("Command: %1s registered", e.toString()));
 		}
@@ -880,11 +880,11 @@ public class CommandManager
 	 * Loads the attributes of a command.
 	 * <p>
 	 * @param command Command.
-	 * @return {@link CommandMetadata} with loaded attributes.
+	 * @return {@link CommandDefinition} with loaded attributes.
 	 * @throws CommandException Thrown in case an error occurred with a command definition.
 	 */
 	@SuppressWarnings("nls")
-	private static final CommandMetadata loadCommandAttributes(@NonNull CommandMetadata command) throws CommandException
+	private static final CommandDefinition loadCommandAttributes(@NonNull CommandDefinition command) throws CommandException
 	{
 		String values[] = null;
 		StringBuilder key = new StringBuilder(COMMAND_PREFIX)
@@ -962,15 +962,15 @@ public class CommandManager
 	@SuppressWarnings("nls")
 	private final static void loadCommandParameters() throws CommandException
 	{
-		CommandParameterMetadata parameter = null;
+		CommandParameterDefinition parameter = null;
 		List<String> values = null;
 		StringBuilder filter = null;
 		String elements[] = null;
 		String tag = null;
 
-		List<CommandMetadata> commands = new ArrayList<>(COMMANDS.values());
+		List<CommandDefinition> commands = new ArrayList<>(COMMANDS.values());
 
-		for (CommandMetadata command : commands)
+		for (CommandDefinition command : commands)
 		{
 			tag = null;
 
@@ -997,7 +997,7 @@ public class CommandManager
 					{
 						tag = elements[7];
 
-						parameter = new CommandParameterMetadata(properties.getString(entry));
+						parameter = new CommandParameterDefinition(properties.getString(entry));
 						command.addParameter(tag, parameter);
 					}
 				}
@@ -1061,11 +1061,11 @@ public class CommandManager
 		CommandDomain d = null;
 		CommandGroup g = null;
 
-		Map<String, Map<String, Map<String, CommandMetadata>>> MAP_DOMAINS = null;
-		Map<String, Map<String, CommandMetadata>> MAP_GROUPS = null;
-		Map<String, CommandMetadata> MAP_COMMANDS = null;
+		Map<String, Map<String, Map<String, CommandDefinition>>> MAP_DOMAINS = null;
+		Map<String, Map<String, CommandDefinition>> MAP_GROUPS = null;
+		Map<String, CommandDefinition> MAP_COMMANDS = null;
 
-		for (CommandMetadata command : new ArrayList<>(COMMANDS.values()))
+		for (CommandDefinition command : new ArrayList<>(COMMANDS.values()))
 		{
 			c = CATEGORIES.get(command.getCategory().getName());
 			d = DOMAINS.get(command.getDomain().getName());
