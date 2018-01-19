@@ -45,6 +45,11 @@
   		<groupId>jline</groupId>
   		<artifactId>jline</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>org.heliosphere</groupId>
+  		<artifactId>general-common</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
   <url>https://github.com/ressec/heliosphere</url>
   <inceptionYear>2017</inceptionYear>
