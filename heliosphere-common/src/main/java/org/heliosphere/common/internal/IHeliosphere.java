@@ -1,4 +1,4 @@
-package org.heliosphere.common;
+package org.heliosphere.common.internal;
 
 /**
  * Marker interface for the {@code Heliosphere} entities.

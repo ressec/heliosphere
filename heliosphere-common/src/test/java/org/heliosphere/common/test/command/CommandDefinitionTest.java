@@ -17,12 +17,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.heliosphere.common.command.CommandManager;
+import org.heliosphere.common.command.definition.CommandCategory;
+import org.heliosphere.common.command.definition.CommandDefinition;
+import org.heliosphere.common.command.definition.CommandDomain;
+import org.heliosphere.common.command.definition.CommandGroup;
+import org.heliosphere.common.command.definition.CommandParameterDefinition;
 import org.heliosphere.common.command.exception.CommandManagerException;
-import org.heliosphere.common.command.internal.metadata.CommandCategory;
-import org.heliosphere.common.command.internal.metadata.CommandDomain;
-import org.heliosphere.common.command.internal.metadata.CommandGroup;
-import org.heliosphere.common.command.internal.metadata.CommandMetadata;
-import org.heliosphere.common.command.internal.metadata.CommandParameterMetadata;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -207,9 +207,9 @@ public final class CommandDefinitionTest
 		try
 		{
 			CommandManager.registerFromFile("./command/definition/command-system.properties");
-			List<CommandMetadata> commands = CommandManager.getCommands();
+			List<CommandDefinition> commands = CommandManager.getCommands();
 
-			for (CommandMetadata command : commands)
+			for (CommandDefinition command : commands)
 			{
 				Assert.assertTrue(
 						String.format("Excepted command names are: %1s but extracted value was: %2s", names, command.getName()),
@@ -238,7 +238,7 @@ public final class CommandDefinitionTest
 		try
 		{
 			CommandManager.registerFromFile("./command/definition/command-system.properties");
-			CommandMetadata command = CommandManager.getCommand(COMMAND_NAME);
+			CommandDefinition command = CommandManager.getCommand(COMMAND_NAME);
 
 			Assert.assertTrue(
 					String.format("Command: %1$s has not been found!", COMMAND_NAME),
@@ -297,7 +297,7 @@ public final class CommandDefinitionTest
 		try
 		{
 			CommandManager.registerFromFile("./command/definition/command-system.properties");
-			CommandMetadata command = CommandManager.getCommand(COMMAND_NAME);
+			CommandDefinition command = CommandManager.getCommand(COMMAND_NAME);
 
 			Assert.assertTrue(
 					String.format("Command: %1$s has not been found!", COMMAND_NAME),
@@ -307,7 +307,7 @@ public final class CommandDefinitionTest
 					String.format("Command: %1$s expected parameters count: %2$d but found: %3$d", COMMAND_NAME, Integer.valueOf(COMMAND_PARAMETER_COUNT), Integer.valueOf(command.getParameters().size())),
 					command.getParameters().size() == COMMAND_PARAMETER_COUNT);
 
-			CommandParameterMetadata parameter = command.getParameter(COMMAND_PARAMETER_NAME);
+			CommandParameterDefinition parameter = command.getParameter(COMMAND_PARAMETER_NAME);
 
 			Assert.assertTrue(
 					String.format("Command %1$s expected parameter: %2$s has not been found!", COMMAND_NAME, COMMAND_PARAMETER_NAME),

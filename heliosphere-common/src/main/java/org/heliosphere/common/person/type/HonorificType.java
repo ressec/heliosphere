@@ -11,7 +11,7 @@
  */
 package org.heliosphere.common.person.type;
 
-import org.heliosphere.common.IHeliosphere;
+import org.heliosphere.common.internal.IHeliosphere;
 import org.heliosphere.common.resource.bundle.ResourceBundleManager;
 import org.heliosphere.common.resource.bundle.annotation.BundleEnum;
 

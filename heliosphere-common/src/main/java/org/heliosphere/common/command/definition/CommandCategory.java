@@ -9,7 +9,7 @@
  * License can be consulted at http://www.apache.org/licenses/LICENSE-2.0
  * ---------------------------------------------------------------------------
  */
-package org.heliosphere.common.command.internal.metadata;
+package org.heliosphere.common.command.definition;
 
 import org.heliosphere.common.command.exception.CommandException;
 

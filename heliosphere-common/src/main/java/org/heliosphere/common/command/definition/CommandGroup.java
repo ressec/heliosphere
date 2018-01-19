@@ -1,4 +1,4 @@
-package org.heliosphere.common.command.internal.metadata;
+package org.heliosphere.common.command.definition;
 
 import lombok.Getter;
 import lombok.NonNull;
